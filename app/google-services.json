@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1014257368323",
+    "firebase_url": "https://projeto-world-c01b9.firebaseio.com",
+    "project_id": "projeto-world-c01b9",
+    "storage_bucket": "projeto-world-c01b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014257368323:android:9e6939cfcfe6327eabbd36",
+        "android_client_info": {
+          "package_name": "com.bacchoterra.letask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1014257368323-glgj9taev0fi8e7aag4vcpt4utmarbii.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bacchoterra.letask",
+            "certificate_hash": "995108c8628563df2bdb4902a396bbdace3bb1a0"
+          }
+        },
+        {
+          "client_id": "1014257368323-v9orvvue8prb2m2kd6e713rg9d4p9ii1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOl2jAcKD5XX4oiz0eX3CybnbkHhfmsEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1014257368323-v9orvvue8prb2m2kd6e713rg9d4p9ii1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
