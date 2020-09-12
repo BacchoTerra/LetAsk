@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">LetAsk</string>
+    <string name="ask_anything_nfor_whoever_you_want">Ask anything. \nFor whoever you want</string>
+    <string name="see_the_questions_and_answers_in_the_original_language_and_in_english_through_instant_translation">See the questions and answers in the original language and in English, through instant translation.</string>
+    <string name="continue_with_e_mail">Continue with e-mail</string>
+    <string name="sign_in_as_a_visitor">Sign in as a visitor</string>
 </resources>

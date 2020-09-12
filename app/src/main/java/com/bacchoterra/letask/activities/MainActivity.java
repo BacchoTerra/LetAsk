@@ -1,8 +1,10 @@
-package com.bacchoterra.letask;
+package com.bacchoterra.letask.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.bacchoterra.letask.R;
 
 public class MainActivity extends AppCompatActivity {
 
