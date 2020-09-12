@@ -6,6 +6,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class FirebaseConfig {
 
+    public static final String USERS_NOD = "Users";
+
     //Firebase components
     private static FirebaseAuth mAuth;
     private static DatabaseReference mRef;
