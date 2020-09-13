@@ -1,13 +1,19 @@
 package com.bacchoterra.letask.helper;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.View;
 
+import com.bacchoterra.letask.R;
 import com.google.android.material.snackbar.Snackbar;
 
 public abstract class MyHelper {
+
+    private static AlertDialog alertDialog;
 
 
     public static Boolean netConn (Context context){
@@ -23,6 +29,28 @@ public abstract class MyHelper {
     public static void showSnackbarLong(int resId, View view){
 
         Snackbar.make(view,resId,Snackbar.LENGTH_LONG).show();
+
+    }
+
+
+    public static void showProgressDialog (Activity activity) {
+
+        @SuppressLint("InflateParams")
+        View view = activity.getLayoutInflater().inflate(R.layout.dialog_progress,null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setView(view);
+        builder.setCancelable(false);
+
+        alertDialog = builder.create();
+        alertDialog.show();
+
+    }
+
+    public static void dismissProgressDialog(){
+
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.dismiss();
+        }
 
     }
 

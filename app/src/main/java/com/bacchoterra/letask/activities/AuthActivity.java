@@ -98,6 +98,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         try {
             GoogleSignInAccount acc = completed.getResult(ApiException.class);
             firebaseGoogleAuth(acc);
+            MyHelper.showProgressDialog(this);
         } catch (ApiException e) {
             Snackbar.make(btnEmailSignIn, "Error", Snackbar.LENGTH_SHORT).show();
             firebaseGoogleAuth(null);
@@ -144,7 +145,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
                             if (account != null) {
 
-                                assert account.getEmail()!= null;
+                                assert account.getEmail() != null;
                                 String id = Base64Custom.toBase64(account.getEmail());
 
                                 Usuario usuario = new Usuario();
@@ -155,6 +156,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                                 usuario.setId(id);
 
                                 rootRef.child(FirebaseConfig.USERS_NOD).child(id).setValue(usuario);
+                                Toast.makeText(AuthActivity.this, "done", Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -167,6 +169,8 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
                     }
                 });
+
+        MyHelper.dismissProgressDialog();
 
 
     }
@@ -181,12 +185,17 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.auth_activity_btnGoogleSignIn:
 
                 if (MyHelper.netConn(this)) {
+
                     Intent intent = mSignInClient.getSignInIntent();
                     startActivityForResult(intent, GOOGLE_INTENT);
+
                 } else {
                     MyHelper.showSnackbarLong(R.string.no_internet_connection, txtVisitorSignIn);
                 }
+                break;
 
+            case R.id.auth_activity_btnEmailSignIn:
+                startActivity(new Intent(AuthActivity.this,EmailAuthActivity.class));
 
         }
 
