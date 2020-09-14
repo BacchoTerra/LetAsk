@@ -1,10 +1,21 @@
 <resources>
     <string name="app_name">LetAsk</string>
-    <string name="ask_anything_nfor_whoever_you_want">Ask anything. \nFor whoever you want</string>
+    <string name="ask_anything_nfor_whoever_you_want">Ask anything. \nFor whoever you want.</string>
     <string name="see_the_questions_and_answers_in_the_original_language_and_in_english_through_instant_translation">See the questions and answers in the original language and in English, through instant translation.</string>
     <string name="continue_with_e_mail">Continue with E-Mail</string>
     <string name="sign_in_as_a_visitor">Sign in as a visitor</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="loading">Loading</string>
     <string name="m_continue">Continue</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_a_new_account">Create a new account</string>
+    <string name="password">Password</string>
+    <string name="use_6_char_or_more_with_letters_and_numbers">use 6 characters or more, with letters and numbers</string>
+    <string name="birthdate">Birthdate</string>
+    <string name="day_first">put day, month and year, in that order.</string>
+    <string name="name">Name</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="sign_in">Sign in</string>
+    <string name="country">Country</string>
 </resources>

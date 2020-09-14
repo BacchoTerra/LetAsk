@@ -4,15 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.location.Address;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.View;
 
 import com.bacchoterra.letask.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.snackbar.Snackbar;
 
 public abstract class MyHelper {
 
+    //Alert dialog
     private static AlertDialog alertDialog;
 
 

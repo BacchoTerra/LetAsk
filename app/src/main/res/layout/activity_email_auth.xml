@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/Theme.MaterialComponents.Light"
     tools:context=".activities.EmailAuthActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -82,5 +81,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_Activity_inputLayoutEmail" />
+
+    <FrameLayout
+        android:id="@+id/email_activity_fragContainer"
+        android:layout_width="409dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email_Activity_btnConfirmEmail">
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
