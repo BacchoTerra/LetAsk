@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.AttrRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -70,18 +71,21 @@ public class RegisterEmailFragment extends Fragment implements View.OnClickListe
 
     }
 
+
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (context == null) {
-            this.context = getActivity();
-        }
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+
+        this.context = context;
+
         if (calendar == null) {
             this.calendar = Calendar.getInstance();
         }
         if (sdf == null) {
             this.sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
         }
+
 
     }
 
@@ -116,7 +120,7 @@ public class RegisterEmailFragment extends Fragment implements View.OnClickListe
             public void onPositiveButtonClick(Long selection) {
 
                 calendar.setTimeInMillis(selection);
-                calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH) + 1);
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
 
                 txtBirthDate.setText(sdf.format(calendar.getTime()));
 

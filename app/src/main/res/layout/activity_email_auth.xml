@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/email_activity_rootLayout"
     android:layout_height="match_parent"
     tools:context=".activities.EmailAuthActivity">
 
@@ -78,9 +79,23 @@
         android:padding="0dp"
         android:text="@string/m_continue"
         android:textColor="@color/white"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_Activity_inputLayoutEmail" />
+
+    <ProgressBar
+        android:id="@+id/email_activity_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/email_Activity_txtHeadline"
+        app:layout_constraintStart_toEndOf="@+id/email_Activity_txtHeadline"
+        app:layout_constraintTop_toTopOf="@+id/email_Activity_txtHeadline" />
 
     <FrameLayout
         android:id="@+id/email_activity_fragContainer"
