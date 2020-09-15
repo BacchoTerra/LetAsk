@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -51,6 +52,9 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
     //ActivityResult identifier
     public static final int GOOGLE_INTENT = 100;
+
+    //Extras
+    public static final String REGISTER_INTENT = "register_intent";
 
 
     @Override
@@ -97,16 +101,16 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             GoogleSignInAccount acc = completed.getResult(ApiException.class);
-            firebaseGoogleAuth(acc);
+            signInWithGoogleCredential(acc);
             MyHelper.showProgressDialog(this);
         } catch (ApiException e) {
             Snackbar.make(btnEmailSignIn, "Error", Snackbar.LENGTH_SHORT).show();
-            firebaseGoogleAuth(null);
+            signInWithGoogleCredential(null);
         }
 
     }
 
-    private void firebaseGoogleAuth(GoogleSignInAccount acc) {
+    private void signInWithGoogleCredential(GoogleSignInAccount acc) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
         mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -115,6 +119,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                 if (task.isSuccessful()) {
 
                     FirebaseUser user = mAuth.getCurrentUser();
+                    assert user != null;
                     handleFirebaseSignIn(user);
 
 
@@ -145,18 +150,18 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
                             if (account != null) {
 
-                                assert account.getEmail() != null;
-                                String id = Base64Custom.toBase64(account.getEmail());
-
                                 Usuario usuario = new Usuario();
-
 
                                 usuario.setName(account.getDisplayName());
                                 usuario.setEmail(account.getEmail());
-                                usuario.setId(id);
+                                assert account.getEmail() !=null;
+                                usuario.setId(Base64Custom.toBase64(account.getEmail()));
 
-                                rootRef.child(FirebaseConfig.USERS_NOD).child(id).setValue(usuario);
-                                Toast.makeText(AuthActivity.this, "done", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(AuthActivity.this,GoogleRegistrationActivity.class);
+                                intent.putExtra(REGISTER_INTENT,usuario);
+
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
 
                             }
 

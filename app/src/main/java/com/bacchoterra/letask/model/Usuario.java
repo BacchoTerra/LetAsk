@@ -2,7 +2,9 @@ package com.bacchoterra.letask.model;
 
 import com.google.firebase.database.Exclude;
 
-public class Usuario {
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
 
     private String name;
     private String id;

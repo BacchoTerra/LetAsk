@@ -4,11 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.transition.Fade;
 import androidx.transition.TransitionManager;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,9 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
-import com.bacchoterra.letask.authfragments.RegisterEmailFragment;
+import com.bacchoterra.letask.authfragments.CreateAccountFragment;
 import com.bacchoterra.letask.config.FirebaseConfig;
-import com.bacchoterra.letask.helper.MyHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -49,7 +46,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
     private FirebaseAuth mAuth;
 
     //Fragment initialization tags
-    public static final String TAG_NEW_USER = "new_user";
+    public static final String EMAIL_FRAG_TAG = "email_registration";
 
 
     @Override
@@ -148,12 +145,12 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
                     if (list.isEmpty()) {
                         editEmail.setEnabled(false);
 
-                        initFragment(new RegisterEmailFragment(),R.anim.slide_in_down);
+                        initFragment(new CreateAccountFragment(),R.anim.slide_in_down);
 
 
                     } else if (list.contains(GoogleAuthProvider.PROVIDER_ID)) {
 
-                        //TODO: Ir para o fragmento de inserçao de dados (birthdate, nome, pais)..
+                        //TODO: Snackbar mostrando que esse email tem um auth do google
 
                     } else if (list.contains(EmailAuthProvider.PROVIDER_ID)) {
 
@@ -176,7 +173,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
     private void initFragment(Fragment fragment,int animation){
 
-        getSupportFragmentManager().beginTransaction().setCustomAnimations(animation,0).replace(R.id.email_activity_fragContainer,fragment).commit();
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(animation,0).replace(R.id.email_activity_fragContainer,fragment, EMAIL_FRAG_TAG).commit();
 
 
     }

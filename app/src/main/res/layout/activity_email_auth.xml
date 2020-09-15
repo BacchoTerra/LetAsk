@@ -61,6 +61,7 @@
             android:id="@+id/email_Activity_editEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/e_mail_address"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 

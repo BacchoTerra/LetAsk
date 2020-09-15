@@ -19,4 +19,7 @@
     <string name="sign_in">Sign in</string>
     <string name="country">Country</string>
     <string name="we_noticed_there_is_no_account_in_this_email_create_now">We noticed that there is no account in this email, create on now!</string>
+    <string name="e_mail_address">E-mail address</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="fill_in_the_extra_information_to_create_your_account">Fill in the extra information to create your account.</string>
 </resources>

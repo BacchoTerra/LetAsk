@@ -14,6 +14,7 @@
 
     <color name="btnEnabled">@color/colorPrimary</color>
     <color name="btnDisabled">#BABABA</color>
+    <color name="cardBackground">#f6f6f6</color>
 
 
 </resources>

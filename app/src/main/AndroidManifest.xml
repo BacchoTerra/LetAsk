@@ -13,8 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.EmailAuthActivity"
-            android:parentActivityName=".activities.AuthActivity"/>
+        <activity android:name=".activities.GoogleRegistrationActivity"></activity>
+        <activity
+            android:name=".activities.EmailAuthActivity"
+            android:parentActivityName=".activities.AuthActivity" />
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.AuthActivity">
             <intent-filter>
