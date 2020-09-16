@@ -166,6 +166,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
                 }
 
                 progressBar.setVisibility(View.GONE);
+
             }
         });
 
@@ -200,4 +201,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
         }
 
     }
+
+
+
 }

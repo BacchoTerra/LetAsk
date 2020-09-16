@@ -16,5 +16,8 @@
     <color name="btnDisabled">#BABABA</color>
     <color name="cardBackground">#f6f6f6</color>
 
+    <color name="greenCheck">#4caf50</color>
+    <color name="redWrong">#F44336</color>
+
 
 </resources>

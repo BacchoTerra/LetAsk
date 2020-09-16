@@ -3,25 +3,39 @@ package com.bacchoterra.letask.authfragments;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.activities.GoogleRegistrationActivity;
+import com.bacchoterra.letask.config.FirebaseConfig;
+import com.bacchoterra.letask.helper.Base64Custom;
+import com.bacchoterra.letask.helper.MyHelper;
 import com.bacchoterra.letask.model.Usuario;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,19 +49,32 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     //Layout components
     private View view;
+    private TextInputLayout inputLayoutName;
     private TextInputEditText editName;
     private TextInputLayout inputLayoutPassword;
     private TextInputEditText editPassword;
     private FloatingActionButton fabLocation;
     private FloatingActionButton fabBirthDate;
     private TextView txtBirthDate;
+    private Button btnSignIn;
 
     //Calendar components;
     private Calendar calendar;
     private SimpleDateFormat sdf;
+    private int currentYear;
 
     //Model
     private Usuario argumentedUsuario;
+    private Usuario usuario;
+
+    private String userName;
+    private String userEmail;
+    private String userId;
+    private Long userBirthDate;
+
+    //Firebase
+    private FirebaseAuth mAuth;
+    private DatabaseReference rootRef;
 
 
     public CreateAccountFragment() {
@@ -69,7 +96,6 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         init();
 
 
-
         return view;
 
     }
@@ -84,11 +110,11 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
         if (calendar == null) {
             this.calendar = Calendar.getInstance();
+            this.currentYear = calendar.get(Calendar.YEAR);
         }
         if (sdf == null) {
             this.sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
         }
-
 
     }
 
@@ -100,15 +126,19 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     private void initViews() {
 
+        inputLayoutName = view.findViewById(R.id.frag_register_email_inputLayoutName);
         editName = view.findViewById(R.id.frag_register_email_editName);
         inputLayoutPassword = view.findViewById(R.id.frag_register_email_inputLayoutPassword);
         editPassword = view.findViewById(R.id.frag_register_email_editPassword);
         fabLocation = view.findViewById(R.id.frag_register_email_fabLocation);
         fabBirthDate = view.findViewById(R.id.frag_register_email_fabBirthDate);
         txtBirthDate = view.findViewById(R.id.frag_register_email_txtBirthDate);
+        btnSignIn = view.findViewById(R.id.frag_register_email_btnSignIn);
 
         fabLocation.setOnClickListener(this);
         fabBirthDate.setOnClickListener(this);
+        btnSignIn.setOnClickListener(this);
+
 
     }
 
@@ -125,10 +155,20 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
             public void onPositiveButtonClick(Long selection) {
 
                 calendar.setTimeInMillis(selection);
-                calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
 
-                txtBirthDate.setText(sdf.format(calendar.getTime()));
-                fabBirthDate.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+
+                if (calendar.get(Calendar.YEAR) > currentYear) {
+
+                    txtBirthDate.setText(R.string.invalid_date);
+                    fabBirthDate.setImageResource(R.drawable.ic_baseline_cake_24);
+                    userBirthDate = null;
+
+                } else {
+                    txtBirthDate.setText(sdf.format(calendar.getTime()));
+                    fabBirthDate.setImageResource(R.drawable.ic_round_green_check_24);
+                    userBirthDate = selection;
+
+                }
 
 
             }
@@ -137,19 +177,57 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     }
 
-    private void checkFragHost(){
+    private void checkFragHost() {
 
         assert getTag() != null;
-        if (getTag().equals(GoogleRegistrationActivity.GOOGLE_FRAG_TAG)){
+        if (getTag().equals(GoogleRegistrationActivity.GOOGLE_FRAG_TAG)) {
 
-            if (getArguments() != null){
+            if (getArguments() != null) {
                 argumentedUsuario = (Usuario) getArguments().getSerializable(GoogleRegistrationActivity.BUNDLE_KEY);
             }
 
             inputLayoutPassword.setVisibility(View.GONE);
             editName.setText(argumentedUsuario.getName());
 
+
         }
+
+
+    }
+
+    private void saveGoogleUser() {
+
+
+        userName = editName.getText().toString();
+        userEmail = argumentedUsuario.getEmail();
+        userId = Base64Custom.toBase64(argumentedUsuario.getEmail());
+
+
+        usuario = new Usuario();
+
+        usuario.setName(userName);
+        usuario.setEmail(userEmail);
+        usuario.setBirthDate(userBirthDate);
+        usuario.setId(Base64Custom.toBase64(userId));
+
+        rootRef = FirebaseConfig.getFBDatabase();
+
+        rootRef.child(FirebaseConfig.USERS_NOD)
+                .child(userId)
+                .setValue(usuario)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        if (task.isSuccessful()) {
+
+                            Toast.makeText(context, "salvo", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
 
     }
@@ -160,6 +238,40 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         switch (view.getId()) {
             case R.id.frag_register_email_fabBirthDate:
                 initMaterialDatePicker();
+                break;
+
+            case R.id.frag_register_email_btnSignIn:
+
+                assert getTag() != null;
+                if (getTag().equals(GoogleRegistrationActivity.GOOGLE_FRAG_TAG)) {
+
+                    if (MyHelper.netConn(context)){
+                        userName = editName.getText().toString();
+                        userEmail = argumentedUsuario.getEmail();
+                        userId = Base64Custom.toBase64(userEmail);
+
+
+                        if (!userName.isEmpty()) {
+                            if (userBirthDate != null) {
+
+                                saveGoogleUser();
+
+
+                            } else {
+                                MyHelper.showSnackbarLong(R.string.select_a_valid_birth_date, view);
+                            }
+                        } else {
+                            MyHelper.showSnackbarLong(R.string.invalid_user_name, view);
+                        }
+
+
+                    }else {
+                        MyHelper.showSnackbarLong(R.string.no_internet_connection,view);
+                    }
+
+                }
+
+
         }
     }
 }

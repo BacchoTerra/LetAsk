@@ -22,4 +22,7 @@
     <string name="e_mail_address">E-mail address</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="fill_in_the_extra_information_to_create_your_account">Fill in the extra information to create your account.</string>
+    <string name="invalid_date">invalid date</string>
+    <string name="invalid_user_name">Invalid user name</string>
+    <string name="select_a_valid_birth_date">Please, select a valid birth date</string>
 </resources>

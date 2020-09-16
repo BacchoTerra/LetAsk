@@ -9,6 +9,7 @@ public class Usuario implements Serializable {
     private String name;
     private String id;
     private String email;
+    private Long birthDate;
 
 
     public String getName() {
@@ -34,5 +35,13 @@ public class Usuario implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Long birthDate) {
+        this.birthDate = birthDate;
     }
 }

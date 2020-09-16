@@ -11,8 +11,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        app:cardBackgroundColor="@color/cardBackground">
+        app:cardBackgroundColor="@color/cardBackground"
+        app:cardCornerRadius="12dp">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,7 +48,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/frag_register_email_inputLayoutName">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/frag_register_email_editPassword"
@@ -58,7 +58,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout"
+                android:id="@+id/frag_register_email_inputLayoutName"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -111,21 +111,26 @@
 
             <TextView
                 android:id="@+id/frag_register_email_txtBirthDate"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:text="@string/date_of_birth"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 app:layout_constraintBottom_toBottomOf="@+id/frag_register_email_fabBirthDate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/frag_register_email_fabBirthDate"
                 app:layout_constraintTop_toTopOf="@+id/frag_register_email_fabBirthDate" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/frag_register_email_btnSignIn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
+                android:background="@drawable/selector_btn_enabled_disabled"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
@@ -137,14 +142,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/frag_register_email_fabLocation" />
 
             <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
+                android:id="@+id/frag_register_email_txtCountry"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:text="@string/country"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 app:layout_constraintBottom_toBottomOf="@+id/frag_register_email_fabLocation"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/frag_register_email_fabLocation"
                 app:layout_constraintTop_toTopOf="@+id/frag_register_email_fabLocation" />
 
