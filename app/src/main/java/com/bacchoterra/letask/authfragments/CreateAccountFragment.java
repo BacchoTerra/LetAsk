@@ -2,13 +2,16 @@ package com.bacchoterra.letask.authfragments;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.os.ConfigurationCompat;
 import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 
@@ -18,6 +21,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,15 +60,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     private TextInputEditText editName;
     private TextInputLayout inputLayoutPassword;
     private TextInputEditText editPassword;
-    private FloatingActionButton fabLocation;
-    private FloatingActionButton fabBirthDate;
-    private TextView txtBirthDate;
+    private AppCompatAutoCompleteTextView actvCountry;
     private Button btnSignIn;
-
-    //Calendar components;
-    private Calendar calendar;
-    private SimpleDateFormat sdf;
-    private int currentYear;
 
     //Model
     private Usuario argumentedUsuario;
@@ -72,7 +70,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     private String userName;
     private String userEmail;
     private String userId;
-    private Long userBirthDate;
+    private String userCountry;
 
     //Firebase
     private FirebaseAuth mAuth;
@@ -91,6 +89,10 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         view = inflater.inflate(R.layout.fragment_create_account, container, false);
         init();
 
+        String s = Locale.getDefault().getCountry();
+
+        Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+
 
         return view;
 
@@ -100,23 +102,14 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
-
         this.context = context;
-
-        if (calendar == null) {
-            this.calendar = Calendar.getInstance();
-            this.currentYear = calendar.get(Calendar.YEAR);
-        }
-        if (sdf == null) {
-            this.sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-        }
 
     }
 
     private void init() {
         initViews();
         checkFragHost();
+        initAutoCompleteCountry();
 
     }
 
@@ -126,52 +119,26 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         editName = view.findViewById(R.id.frag_register_email_editName);
         inputLayoutPassword = view.findViewById(R.id.frag_register_email_inputLayoutPassword);
         editPassword = view.findViewById(R.id.frag_register_email_editPassword);
-        fabLocation = view.findViewById(R.id.frag_register_email_fabLocation);
-        fabBirthDate = view.findViewById(R.id.frag_register_email_fabBirthDate);
-        txtBirthDate = view.findViewById(R.id.frag_register_email_txtBirthDate);
-        btnSignIn = view.findViewById(R.id.frag_register_email_btnSignIn);
+        actvCountry = view.findViewById(R.id.frag_register_email_actvCountry);
 
-        fabLocation.setOnClickListener(this);
-        fabBirthDate.setOnClickListener(this);
+
+        btnSignIn = view.findViewById(R.id.frag_register_email_btnSignIn);
         btnSignIn.setOnClickListener(this);
 
 
     }
 
-    private void initMaterialDatePicker() {
+    private void initAutoCompleteCountry(){
 
-        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+        String [] vector = {"Brazil", "USA","Russia","China","Barbados"};
 
-        MaterialDatePicker<Long> picker = builder.build();
+        ArrayAdapter<String> countries = new ArrayAdapter<String>(context,android.R.layout.simple_expandable_list_item_1,vector);
 
-        picker.show(getChildFragmentManager(), picker.toString());
-
-        picker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
-            @Override
-            public void onPositiveButtonClick(Long selection) {
-
-                calendar.setTimeInMillis(selection);
-
-
-                if (calendar.get(Calendar.YEAR) > currentYear) {
-
-                    txtBirthDate.setText(R.string.invalid_date);
-                    fabBirthDate.setImageResource(R.drawable.ic_baseline_cake_24);
-                    userBirthDate = null;
-
-                } else {
-                    txtBirthDate.setText(sdf.format(calendar.getTime()));
-                    fabBirthDate.setImageResource(R.drawable.ic_round_green_check_24);
-                    userBirthDate = selection;
-
-                }
-
-
-            }
-        });
+        actvCountry.setAdapter(countries);
 
 
     }
+
 
     private void checkFragHost() {
 
@@ -184,8 +151,6 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
             inputLayoutPassword.setVisibility(View.GONE);
             editName.setText(argumentedUsuario.getName());
-
-
         }
 
 
@@ -194,17 +159,12 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     private void saveGoogleUser() {
 
 
-        userName = editName.getText().toString();
-        userEmail = argumentedUsuario.getEmail();
-        userId = Base64Custom.toBase64(argumentedUsuario.getEmail());
-
-
         usuario = new Usuario();
 
         usuario.setName(userName);
         usuario.setEmail(userEmail);
-        usuario.setBirthDate(userBirthDate);
         usuario.setId(Base64Custom.toBase64(userId));
+        usuario.setCountry(userCountry);
 
         rootRef = FirebaseConfig.getFBDatabase();
 
@@ -232,9 +192,6 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     public void onClick(View view) {
 
         switch (view.getId()) {
-            case R.id.frag_register_email_fabBirthDate:
-                initMaterialDatePicker();
-                break;
 
             case R.id.frag_register_email_btnSignIn:
 
@@ -244,19 +201,20 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                     if (MyHelper.netConn(context)){
                         userName = editName.getText().toString();
                         userEmail = argumentedUsuario.getEmail();
+                        userCountry = actvCountry.getText().toString();
                         userId = Base64Custom.toBase64(userEmail);
 
+                        if (userName.length() >= 5) {
 
-                        if (!userName.isEmpty()) {
-                            if (userBirthDate != null) {
-
+                            if (!userCountry.isEmpty()){
                                 saveGoogleUser();
 
-
-                            } else {
-                                MyHelper.showSnackbarLong(R.string.select_a_valid_birth_date, view);
+                            }else {
+                                MyHelper.showSnackbarLong(R.string.please_select_your_country, view);
                             }
-                        } else {
+
+
+                        } else{
                             MyHelper.showSnackbarLong(R.string.invalid_user_name, view);
                         }
 

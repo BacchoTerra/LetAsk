@@ -23,6 +23,8 @@
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="fill_in_the_extra_information_to_create_your_account">Fill in the extra information to create your account.</string>
     <string name="invalid_date">invalid date</string>
-    <string name="invalid_user_name">Invalid user name</string>
+    <string name="invalid_user_name">Invalid user name, minimum of 5 characters</string>
     <string name="select_a_valid_birth_date">Please, select a valid birth date</string>
+    <string name="select_your_country">Select your country</string>
+    <string name="please_select_your_country">Please, select your country</string>
 </resources>

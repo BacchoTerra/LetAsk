@@ -9,8 +9,16 @@ public class Usuario implements Serializable {
     private String name;
     private String id;
     private String email;
+    private String country;
     private Long birthDate;
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
     public String getName() {
         return name;
