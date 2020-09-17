@@ -13,7 +13,7 @@
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_launcher_background" />
+        android:src="@drawable/ic_undraw_convert"/>
 
     <TextView
         android:id="@+id/auth_activity_txtHeadline1"
