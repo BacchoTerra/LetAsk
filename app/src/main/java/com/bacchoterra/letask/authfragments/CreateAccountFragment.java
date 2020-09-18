@@ -131,23 +131,37 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     }
 
-    private void initAutoCompleteCountry(){
+    private void initAutoCompleteCountry() {
 
         World.init(context);
 
         final List<Country> countries = World.getAllCountries();
 
-        for (Country c:countries){
+        for (Country c : countries) {
 
             String countryName = c.getName();
             countryList.add(countryName);
 
         }
 
-        ArrayAdapter<String> actvCountries = new ArrayAdapter<>(context,android.R.layout.simple_expandable_list_item_1,countryList);
+        ArrayAdapter<String> actvCountries = new ArrayAdapter<>(context, android.R.layout.simple_expandable_list_item_1, countryList);
 
         actvCountry.setAdapter(actvCountries);
 
+
+    }
+
+    private boolean isNameOnlyLetters(String name) {
+
+        char[] letters = name.toCharArray();
+
+        for (char c : letters) {
+            if (!Character.isLetter(c) && c !=' ') {
+                return false;
+            }
+        }
+
+        return true;
 
     }
 
@@ -163,6 +177,44 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
             inputLayoutPassword.setVisibility(View.GONE);
             editName.setText(argumentedUsuario.getName());
+        }
+
+
+    }
+
+    private void initEmailUserRegistration() {
+
+    }
+
+    private void initGoogleUserRegistration() {
+        if (MyHelper.netConn(context)) {
+            userName = editName.getText().toString().trim();
+            userEmail = argumentedUsuario.getEmail();
+            userCountry = actvCountry.getText().toString();
+            userId = Base64Custom.toBase64(userEmail);
+
+            if (userName.length() >= 5 && isNameOnlyLetters(userName)) {
+
+                if (!userCountry.isEmpty() && countryList.contains(userCountry)) {
+                    saveGoogleUser();
+
+                } else if (userCountry.isEmpty()) {
+
+                    MyHelper.showSnackbarLong(R.string.please_select_your_country, view);
+                } else {
+                    MyHelper.showSnackbarLong(R.string.select_a_valid_country, view);
+                }
+
+
+            } else if (!isNameOnlyLetters(userName)){
+                MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters, view);
+            }else {
+                MyHelper.showSnackbarLong(R.string.invalid_user_name,view);
+            }
+
+
+        } else {
+            MyHelper.showSnackbarLong(R.string.no_internet_connection, view);
         }
 
 
@@ -210,40 +262,14 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                 assert getTag() != null;
                 if (getTag().equals(GoogleRegistrationActivity.GOOGLE_FRAG_TAG)) {
 
-                    if (MyHelper.netConn(context)){
-                        userName = editName.getText().toString();
-                        userEmail = argumentedUsuario.getEmail();
-                        userCountry = actvCountry.getText().toString();
-                        userId = Base64Custom.toBase64(userEmail);
+                    initGoogleUserRegistration();
 
-                        if (userName.length() >= 5) {
-
-                            if (!userCountry.isEmpty() && countryList.contains(userCountry)){
-                                saveGoogleUser();
-
-                            }else if (userCountry.isEmpty()){
-
-                                MyHelper.showSnackbarLong(R.string.please_select_your_country, view);
-                            }else{
-                                MyHelper.showSnackbarLong(R.string.select_a_valid_country,view);
-                            }
-
-
-                        } else{
-                            MyHelper.showSnackbarLong(R.string.invalid_user_name, view);
-                        }
-
-
-                    }else {
-                        MyHelper.showSnackbarLong(R.string.no_internet_connection,view);
-                    }
-
+                } else {
+                    initEmailUserRegistration();
                 }
-
-
         }
+
+        //TODO: ADCICIONAR PERMISSOES DE GPS E FEATURE DE PEGAR LOCALIZAÇAO NO CLICK DO FABLOCATION
+
     }
-
-    //TODO: ADCICIONAR PERMISSOES DE GPS E FEATURE DE PEGAR LOCALIZAÇAO NO CLICK DO FABLOCATION
-
 }

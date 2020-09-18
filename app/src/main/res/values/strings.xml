@@ -28,4 +28,5 @@
     <string name="select_your_country">Select your country</string>
     <string name="please_select_your_country">Please, select your country</string>
     <string name="select_a_valid_country">Please select a country from our list</string>
+    <string name="name_can_only_contain_letters">Name can only contain letters and spaces</string>
 </resources>
