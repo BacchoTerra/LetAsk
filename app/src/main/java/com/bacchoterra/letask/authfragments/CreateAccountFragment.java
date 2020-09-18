@@ -33,6 +33,8 @@ import com.bacchoterra.letask.config.FirebaseConfig;
 import com.bacchoterra.letask.helper.Base64Custom;
 import com.bacchoterra.letask.helper.MyHelper;
 import com.bacchoterra.letask.model.Usuario;
+import com.blongho.country_data.Country;
+import com.blongho.country_data.World;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -45,7 +47,9 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -76,6 +80,9 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     private FirebaseAuth mAuth;
     private DatabaseReference rootRef;
 
+    //Extras
+    private List<String> countryList = new ArrayList<>();
+
 
     public CreateAccountFragment() {
         // Required empty public constructor
@@ -88,10 +95,6 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_create_account, container, false);
         init();
-
-        String s = Locale.getDefault().getCountry();
-
-        Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
 
 
         return view;
@@ -130,11 +133,20 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     private void initAutoCompleteCountry(){
 
-        String [] vector = {"Brazil", "USA","Russia","China","Barbados"};
+        World.init(context);
 
-        ArrayAdapter<String> countries = new ArrayAdapter<String>(context,android.R.layout.simple_expandable_list_item_1,vector);
+        final List<Country> countries = World.getAllCountries();
 
-        actvCountry.setAdapter(countries);
+        for (Country c:countries){
+
+            String countryName = c.getName();
+            countryList.add(countryName);
+
+        }
+
+        ArrayAdapter<String> actvCountries = new ArrayAdapter<>(context,android.R.layout.simple_expandable_list_item_1,countryList);
+
+        actvCountry.setAdapter(actvCountries);
 
 
     }
@@ -206,11 +218,14 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
                         if (userName.length() >= 5) {
 
-                            if (!userCountry.isEmpty()){
+                            if (!userCountry.isEmpty() && countryList.contains(userCountry)){
                                 saveGoogleUser();
 
-                            }else {
+                            }else if (userCountry.isEmpty()){
+
                                 MyHelper.showSnackbarLong(R.string.please_select_your_country, view);
+                            }else{
+                                MyHelper.showSnackbarLong(R.string.select_a_valid_country,view);
                             }
 
 

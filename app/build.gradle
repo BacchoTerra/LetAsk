@@ -47,4 +47,7 @@ dependencies {
     //https://github.com/hdodenhof/CircleImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    //https://github.com/blongho/worldCountryData
+    implementation 'com.github.blongho:worldCountryData:1.5'
+
 }

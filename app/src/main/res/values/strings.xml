@@ -27,4 +27,5 @@
     <string name="select_a_valid_birth_date">Please, select a valid birth date</string>
     <string name="select_your_country">Select your country</string>
     <string name="please_select_your_country">Please, select your country</string>
+    <string name="select_a_valid_country">Please select a country from our list</string>
 </resources>
