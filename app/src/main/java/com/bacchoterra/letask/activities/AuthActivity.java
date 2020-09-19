@@ -136,6 +136,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                     }else if (task.getResult().getSignInMethods().contains(EmailAuthProvider.PROVIDER_ID)){
 
                         MyHelper.showSnackbarLong(R.string.this_account_has_email_auth,btnEmailSignIn);
+                        mSignInClient.signOut();
 
                     } else {
                         authCredential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
@@ -209,8 +210,6 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
-
-
 
 
     @Override

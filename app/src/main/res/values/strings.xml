@@ -1,4 +1,8 @@
 <resources>
+
+    <string name="lorem_title">"Lorem Ipsum"</string>
+    <string name="lorem_ipsum">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"</string>
+
     <string name="app_name">LetAsk</string>
     <string name="ask_anything_nfor_whoever_you_want">Ask anything. \nFor whoever you want.</string>
     <string name="see_the_questions_and_answers_in_the_original_language_and_in_english_through_instant_translation">See the questions and answers in the original language and in English, through instant translation.</string>
@@ -38,4 +42,10 @@
     <string name="forgot_password">Forgot password</string>
     <string name="this_account_has_email_auth">This account is registered with email address</string>
     <string name="incorrect_password">incorrect password</string>
+    <string name="send_email_to_redefine_password">Please, insert your email in the field below, we will send you an email to redefine your password.</string>
+    <string name="send_email">Send email</string>
+    <string name="email_sent">Email sent</string>
+    <string name="error">Error</string>
+    <string name="cancel">Cancel</string>
+
 </resources>
