@@ -33,4 +33,9 @@
     <string name="name_should_countain_5_min">Name should countain a minimun of 5 chars</string>
     <string name="error_creatin_account">Error creating account, try again in a few moments</string>
     <string name="already_registered_with_google">This email is already registered with google sign in in this app</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="this_account_has_email_auth">This account is registered with email address</string>
+    <string name="incorrect_password">incorrect password</string>
 </resources>

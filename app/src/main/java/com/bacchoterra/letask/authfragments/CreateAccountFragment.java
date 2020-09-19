@@ -49,6 +49,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
 import java.sql.Timestamp;
@@ -78,7 +79,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     //model for email login
     private Usuario emailUsuario;
-    private String userEmail;
+    private String userEmail; // this string come from EmailAuthActivity as a argument for this fragment.
 
 
     //Firebase
@@ -174,6 +175,9 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     private void createAccount() {
 
+        assert  getActivity() != null;
+        MyHelper.showProgressDialog(getActivity());
+
         assert editName.getText() != null;
 
         final String name = editName.getText().toString();
@@ -224,7 +228,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
         }
 
-        if (getTag().equals(EmailAuthActivity.EMAIL_FRAG_TAG)){
+        if (getTag().equals(EmailAuthActivity.EMAIL_REGISTRATION_FRAG_TAG)){
 
 
             assert  editPassword.getText() != null;
@@ -298,8 +302,11 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                     getActivity().overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
 
                 } else {
+                    deleteUserFromFBAuth();
                     Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
                 }
+
+                MyHelper.dismissProgressDialog();
             }
         });
 
@@ -307,13 +314,18 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     }
 
 
+    private void deleteUserFromFBAuth(){
+        assert  mAuth.getCurrentUser() != null;
+        mAuth.getCurrentUser().delete();
+    }
+
     private void checkFragHost() {
 
         assert getTag() != null;
         if (getTag().equals(GoogleRegistrationActivity.GOOGLE_FRAG_TAG)) {
 
             if (getArguments() != null) {
-                googleUsuario = (Usuario) getArguments().getSerializable(GoogleRegistrationActivity.BUNDLE_KEY);
+                googleUsuario = (Usuario) getArguments().getSerializable(GoogleRegistrationActivity.BUNDLE_USER_INFO_KEY);
             }
 
             inputLayoutPassword.setVisibility(View.GONE);

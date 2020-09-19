@@ -28,13 +28,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.List;
 
 public class AuthActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -54,7 +58,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
     public static final int GOOGLE_INTENT = 100;
 
     //Extras (Bundle key for user with google info already set)
-    public static final String BUNDLE_USER_INFO = "bundle_user_info";
+    public static final String BUNDLE_GOOGLE_USER_INFO_KEY = "bundle_user_info";
 
     //Google auth credential
     public static AuthCredential authCredential;
@@ -68,9 +72,8 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
-
-        mAuth = FirebaseConfig.getFBAuth();
         rootRef = FirebaseConfig.getFBDatabase();
+        mAuth = FirebaseConfig.getFBAuth();
 
         initViews();
         initGoogleSignIn();
@@ -104,7 +107,8 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             GoogleSignInAccount acc = completed.getResult(ApiException.class);
-            handleGoogleUserExistence();
+            assert acc != null;
+            handleGoogleUserExistence(acc);
         } catch (ApiException e) {
             Snackbar.make(btnEmailSignIn, "Error", Snackbar.LENGTH_SHORT).show();
         }
@@ -112,13 +116,53 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void handleGoogleUserExistence() {
+    private void handleGoogleUserExistence(final GoogleSignInAccount acc){
 
-        final GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(this);
-        assert acc != null;
-        String email = acc.getEmail();
+
+
+        final String email = acc.getEmail();
 
         assert email != null;
+
+        mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+            @Override
+            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+
+                if (task.isSuccessful()){
+
+                    if (task.getResult().getSignInMethods().contains(GoogleAuthProvider.PROVIDER_ID)){
+                        startActivity(new Intent(AuthActivity.this,MainActivity.class));
+                        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                    }else if (task.getResult().getSignInMethods().contains(EmailAuthProvider.PROVIDER_ID)){
+
+                        MyHelper.showSnackbarLong(R.string.this_account_has_email_auth,btnEmailSignIn);
+
+                    } else {
+                        authCredential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
+
+                        Usuario usuario = new Usuario();
+
+                        usuario.setName(acc.getDisplayName());
+                        usuario.setEmail(acc.getEmail());
+                        usuario.setId(Base64Custom.toBase64(acc.getEmail()));
+
+                        Intent intent = new Intent(AuthActivity.this, GoogleRegistrationActivity.class);
+
+                        intent.putExtra(BUNDLE_GOOGLE_USER_INFO_KEY,usuario);
+
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+                    }
+
+                }else {
+                    assert task.getException() != null;
+                    Toast.makeText(AuthActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        /*
         rootRef.child(FirebaseConfig.USERS_NOD)
                 .child(Base64Custom.toBase64(email))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -128,6 +172,9 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                         if (snapshot.exists()) {
 
                             startActivity(new Intent(AuthActivity.this,MainActivity.class));
+                            overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+
+
                         } else {
 
                              authCredential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
@@ -140,7 +187,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
                             Intent intent = new Intent(AuthActivity.this, GoogleRegistrationActivity.class);
 
-                            intent.putExtra(BUNDLE_USER_INFO,usuario);
+                            intent.putExtra(BUNDLE_GOOGLE_USER_INFO_KEY,usuario);
 
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
@@ -155,10 +202,15 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
 
+
+         */
+
         MyHelper.dismissProgressDialog();
 
 
     }
+
+
 
 
     @Override

@@ -21,12 +21,9 @@ public class GoogleRegistrationActivity extends AppCompatActivity {
     //Model
     public Usuario usuario;
 
-    //Bundle from AuthActivity
-    private Bundle bundle;
-
-    //Fragment arguments;
-    public static final String BUNDLE_KEY = "bundle_google_key";
-    public static final String GOOGLE_FRAG_TAG = "google_registration";
+    //Fragment arguments and Tag;
+    public static final String BUNDLE_USER_INFO_KEY = "bundle_user_info_key";
+    public static final String GOOGLE_FRAG_TAG = "google_registration_frag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +60,11 @@ public class GoogleRegistrationActivity extends AppCompatActivity {
 
     private void getBundleFromActivity() {
 
-        bundle = getIntent().getExtras();
+        Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
 
-            usuario = (Usuario) bundle.get(AuthActivity.BUNDLE_USER_INFO);
+            usuario = (Usuario) bundle.get(AuthActivity.BUNDLE_GOOGLE_USER_INFO_KEY);
 
         }
 
@@ -78,7 +75,7 @@ public class GoogleRegistrationActivity extends AppCompatActivity {
         CreateAccountFragment mFrag = new CreateAccountFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(BUNDLE_KEY, usuario);
+        bundle.putSerializable(BUNDLE_USER_INFO_KEY, usuario);
 
         mFrag.setArguments(bundle);
 

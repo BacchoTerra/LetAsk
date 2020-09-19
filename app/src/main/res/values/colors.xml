@@ -11,6 +11,7 @@
     <color name="textSecondaryColor">#737373</color>
 
     <color name="homeAsUpIndicator">#000000</color>
+    <color name="statusBarColor">#cccccc</color>
 
     <color name="btnEnabled">@color/colorPrimary</color>
     <color name="btnDisabled">#BABABA</color>

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.authfragments.CreateAccountFragment;
+import com.bacchoterra.letask.authfragments.SignInFragment;
 import com.bacchoterra.letask.config.FirebaseConfig;
 import com.bacchoterra.letask.helper.MyHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,7 +49,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
     //Fragment initialization tags
     public static final String BUNDLE_KEY = "bundle__email_key";
-    public static final String EMAIL_FRAG_TAG = "email_registration";
+    public static final String EMAIL_REGISTRATION_FRAG_TAG = "email_registration";
 
 
     @Override
@@ -159,14 +160,15 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
 
                     } else if (list.contains(EmailAuthProvider.PROVIDER_ID)) {
-
-                        //TODO:ir para o Fragmento de colocar a senha.
+                        initSignInFragment();
+                        editEmail.setEnabled(false);
 
                     }
 
                 } else {
 
-                    Toast.makeText(EmailAuthActivity.this, "error", Toast.LENGTH_SHORT).show();
+                    assert task.getException() != null;
+                    Toast.makeText(EmailAuthActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     changeVisibilityWitFade(btnContinue);
 
                 }
@@ -188,7 +190,23 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
         fragment.setArguments(emailBundle);
 
-        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_down,0).replace(R.id.email_activity_fragContainer,fragment, EMAIL_FRAG_TAG).commit();
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_down,0).replace(R.id.email_activity_fragContainer,fragment, EMAIL_REGISTRATION_FRAG_TAG).commit();
+
+
+    }
+
+    private void initSignInFragment(){
+
+        SignInFragment signInFragment = new SignInFragment();
+
+        Bundle bundle = new Bundle();
+
+        bundle.putString(BUNDLE_KEY,editEmail.getText().toString());
+
+        signInFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_down,0).replace(R.id.email_activity_fragContainer,signInFragment).commit();
+
 
 
     }
