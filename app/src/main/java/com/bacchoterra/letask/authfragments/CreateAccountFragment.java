@@ -1,6 +1,7 @@
 package com.bacchoterra.letask.authfragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -28,7 +29,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
+import com.bacchoterra.letask.activities.AuthActivity;
+import com.bacchoterra.letask.activities.EmailAuthActivity;
 import com.bacchoterra.letask.activities.GoogleRegistrationActivity;
+import com.bacchoterra.letask.activities.MainActivity;
 import com.bacchoterra.letask.config.FirebaseConfig;
 import com.bacchoterra.letask.helper.Base64Custom;
 import com.bacchoterra.letask.helper.MyHelper;
@@ -42,7 +46,9 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DatabaseReference;
 
 import java.sql.Timestamp;
@@ -67,14 +73,13 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     private AppCompatAutoCompleteTextView actvCountry;
     private Button btnSignIn;
 
-    //Model
-    private Usuario argumentedUsuario;
-    private Usuario usuario;
+    //Model for google login
+    private Usuario googleUsuario;
 
-    private String userName;
+    //model for email login
+    private Usuario emailUsuario;
     private String userEmail;
-    private String userId;
-    private String userCountry;
+
 
     //Firebase
     private FirebaseAuth mAuth;
@@ -106,6 +111,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+        mAuth = FirebaseConfig.getFBAuth();
+        rootRef = FirebaseConfig.getFBDatabase();
 
     }
 
@@ -156,12 +163,146 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         char[] letters = name.toCharArray();
 
         for (char c : letters) {
-            if (!Character.isLetter(c) && c !=' ') {
+            if (!Character.isLetter(c) && c != ' ') {
                 return false;
             }
         }
 
         return true;
+
+    }
+
+    private void createAccount() {
+
+        assert editName.getText() != null;
+
+        final String name = editName.getText().toString();
+        final String country = actvCountry.getText().toString();
+
+
+        assert getTag() != null;
+
+        if (getTag().equals(GoogleRegistrationActivity.GOOGLE_FRAG_TAG)) {
+
+            if (name.length() >= 5 && isNameOnlyLetters(name)){
+
+                if (!country.isEmpty() && countryList.contains(country)){
+
+                    mAuth.signInWithCredential(AuthActivity.authCredential)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()){
+
+
+                                googleUsuario.setName(name);
+                                googleUsuario.setCountry(country);
+
+                                saveUserInDatabase(googleUsuario);
+
+                            }else {
+                                MyHelper.showSnackbarLong(R.string.error_creatin_account,view);
+                            }
+                        }
+                    });
+
+                }else if (country.isEmpty()){
+                    MyHelper.showSnackbarLong(R.string.please_select_your_country,view);
+                }else if (!countryList.contains(country)){
+                    MyHelper.showSnackbarLong(R.string.select_a_valid_country,view);
+                }
+
+
+            }else if (name.length() <5){
+                MyHelper.showSnackbarLong(R.string.name_should_countain_5_min,view);
+
+            }else if (!isNameOnlyLetters(name)){
+                MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters,view);
+
+            }
+
+
+        }
+
+        if (getTag().equals(EmailAuthActivity.EMAIL_FRAG_TAG)){
+
+
+            assert  editPassword.getText() != null;
+            String password = editPassword.getText().toString();
+
+            if (name.length() >= 5 &&isNameOnlyLetters(name)){
+
+                if (!(password.length() <6) && !password.contains(" ")){
+
+                    if (!country.isEmpty() && countryList.contains(country)){
+
+                        mAuth.createUserWithEmailAndPassword(userEmail,password)
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                                if (task.isSuccessful()){
+
+                                    emailUsuario = new Usuario();
+                                    emailUsuario.setName(name);
+                                    emailUsuario.setEmail(userEmail);
+                                    emailUsuario.setCountry(country);
+                                    emailUsuario.setId(Base64Custom.toBase64(userEmail));
+
+                                    saveUserInDatabase(emailUsuario);
+
+                                }
+
+                            }
+                        });
+
+
+
+                    }else if (country.isEmpty()){
+                        MyHelper.showSnackbarLong(R.string.please_select_your_country,view);
+                    }else if (!countryList.contains(country)){
+                        MyHelper.showSnackbarLong(R.string.select_a_valid_country,view);
+                    }
+
+                }else {
+
+                    MyHelper.showSnackbarLong(R.string.invalid_password,view);
+
+                }
+
+            }else if (name.length() <5){
+                MyHelper.showSnackbarLong(R.string.name_should_countain_5_min,view);
+
+            }else if (!isNameOnlyLetters(name)){
+                MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters,view);
+
+            }
+
+
+        }
+
+
+    }
+
+    private void saveUserInDatabase(Usuario user) {
+
+        rootRef.child(FirebaseConfig.USERS_NOD).child(user.getId()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if (task.isSuccessful()) {
+                    context.startActivity(new Intent(getActivity(), MainActivity.class));
+
+                    assert  getActivity()!= null;
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+
+                } else {
+                    Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
     }
 
@@ -172,82 +313,18 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         if (getTag().equals(GoogleRegistrationActivity.GOOGLE_FRAG_TAG)) {
 
             if (getArguments() != null) {
-                argumentedUsuario = (Usuario) getArguments().getSerializable(GoogleRegistrationActivity.BUNDLE_KEY);
+                googleUsuario = (Usuario) getArguments().getSerializable(GoogleRegistrationActivity.BUNDLE_KEY);
             }
 
             inputLayoutPassword.setVisibility(View.GONE);
-            editName.setText(argumentedUsuario.getName());
-        }
+            editName.setText(googleUsuario.getName());
+        } else {
 
-
-    }
-
-    private void initEmailUserRegistration() {
-
-    }
-
-    private void initGoogleUserRegistration() {
-        if (MyHelper.netConn(context)) {
-            userName = editName.getText().toString().trim();
-            userEmail = argumentedUsuario.getEmail();
-            userCountry = actvCountry.getText().toString();
-            userId = Base64Custom.toBase64(userEmail);
-
-            if (userName.length() >= 5 && isNameOnlyLetters(userName)) {
-
-                if (!userCountry.isEmpty() && countryList.contains(userCountry)) {
-                    saveGoogleUser();
-
-                } else if (userCountry.isEmpty()) {
-
-                    MyHelper.showSnackbarLong(R.string.please_select_your_country, view);
-                } else {
-                    MyHelper.showSnackbarLong(R.string.select_a_valid_country, view);
-                }
-
-
-            } else if (!isNameOnlyLetters(userName)){
-                MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters, view);
-            }else {
-                MyHelper.showSnackbarLong(R.string.invalid_user_name,view);
+            if (getArguments() != null) {
+                userEmail = getArguments().getString(EmailAuthActivity.BUNDLE_KEY);
             }
 
-
-        } else {
-            MyHelper.showSnackbarLong(R.string.no_internet_connection, view);
         }
-
-
-    }
-
-    private void saveGoogleUser() {
-
-
-        usuario = new Usuario();
-
-        usuario.setName(userName);
-        usuario.setEmail(userEmail);
-        usuario.setId(Base64Custom.toBase64(userId));
-        usuario.setCountry(userCountry);
-
-        rootRef = FirebaseConfig.getFBDatabase();
-
-        rootRef.child(FirebaseConfig.USERS_NOD)
-                .child(userId)
-                .setValue(usuario)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-
-                        if (task.isSuccessful()) {
-
-                            Toast.makeText(context, "salvo", Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
 
 
     }
@@ -255,21 +332,18 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
-        switch (view.getId()) {
 
-            case R.id.frag_register_email_btnSignIn:
 
-                assert getTag() != null;
-                if (getTag().equals(GoogleRegistrationActivity.GOOGLE_FRAG_TAG)) {
+        if (view == btnSignIn){
 
-                    initGoogleUserRegistration();
+            if (MyHelper.netConn(context)){
+                createAccount();
+            }else {
+                MyHelper.showSnackbarLong(R.string.no_internet_connection,view);
+            }
 
-                } else {
-                    initEmailUserRegistration();
-                }
+
         }
-
-        //TODO: ADCICIONAR PERMISSOES DE GPS E FEATURE DE PEGAR LOCALIZAÇAO NO CLICK DO FABLOCATION
 
     }
 }

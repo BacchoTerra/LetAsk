@@ -7,10 +7,19 @@ import java.io.Serializable;
 public class Usuario implements Serializable {
 
     private String name;
+    private String passWord;
     private String id;
     private String email;
     private String country;
     private Long birthDate;
+
+    public String getPassWord() {
+        return passWord;
+    }
+
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
+    }
 
     public String getCountry() {
         return country;

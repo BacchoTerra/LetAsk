@@ -53,8 +53,11 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
     //ActivityResult identifier
     public static final int GOOGLE_INTENT = 100;
 
-    //Extras
-    public static final String REGISTER_INTENT = "register_intent";
+    //Extras (Bundle key for user with google info already set)
+    public static final String BUNDLE_USER_INFO = "bundle_user_info";
+
+    //Google auth credential
+    public static AuthCredential authCredential;
 
 
     @Override
@@ -101,37 +104,19 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             GoogleSignInAccount acc = completed.getResult(ApiException.class);
-            signInWithGoogleCredential(acc);
-            MyHelper.showProgressDialog(this);
+            handleGoogleUserExistence();
         } catch (ApiException e) {
             Snackbar.make(btnEmailSignIn, "Error", Snackbar.LENGTH_SHORT).show();
-            signInWithGoogleCredential(null);
         }
 
     }
 
-    private void signInWithGoogleCredential(GoogleSignInAccount acc) {
 
-        AuthCredential credential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
-        mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
+    private void handleGoogleUserExistence() {
 
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    assert user != null;
-                    handleFirebaseSignIn(user);
-
-
-                }
-            }
-        });
-
-    }
-
-    private void handleFirebaseSignIn(FirebaseUser user) {
-
-        String email = user.getEmail();
+        final GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(this);
+        assert acc != null;
+        String email = acc.getEmail();
 
         assert email != null;
         rootRef.child(FirebaseConfig.USERS_NOD)
@@ -142,28 +127,23 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
                         if (snapshot.exists()) {
 
-                            Toast.makeText(AuthActivity.this, "exists", Toast.LENGTH_SHORT).show();
-                            //TODO: Ir para a tela principal.
+                            startActivity(new Intent(AuthActivity.this,MainActivity.class));
                         } else {
 
-                            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(AuthActivity.this);
+                             authCredential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
 
-                            if (account != null) {
+                             Usuario usuario = new Usuario();
 
-                                Usuario usuario = new Usuario();
+                             usuario.setName(acc.getDisplayName());
+                             usuario.setEmail(acc.getEmail());
+                             usuario.setId(Base64Custom.toBase64(acc.getEmail()));
 
-                                usuario.setName(account.getDisplayName());
-                                usuario.setEmail(account.getEmail());
-                                assert account.getEmail() !=null;
-                                usuario.setId(Base64Custom.toBase64(account.getEmail()));
+                            Intent intent = new Intent(AuthActivity.this, GoogleRegistrationActivity.class);
 
-                                Intent intent = new Intent(AuthActivity.this,GoogleRegistrationActivity.class);
-                                intent.putExtra(REGISTER_INTENT,usuario);
+                            intent.putExtra(BUNDLE_USER_INFO,usuario);
 
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
-
-                            }
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
 
 
                         }
@@ -200,7 +180,8 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.auth_activity_btnEmailSignIn:
-                startActivity(new Intent(AuthActivity.this,EmailAuthActivity.class));
+                startActivity(new Intent(AuthActivity.this, EmailAuthActivity.class));
+                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
 
         }
 

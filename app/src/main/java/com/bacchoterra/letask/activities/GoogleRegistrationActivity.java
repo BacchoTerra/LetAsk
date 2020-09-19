@@ -9,6 +9,8 @@ import android.widget.FrameLayout;
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.authfragments.CreateAccountFragment;
 import com.bacchoterra.letask.model.Usuario;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.GoogleAuthCredential;
 
 public class GoogleRegistrationActivity extends AppCompatActivity {
 
@@ -18,10 +20,12 @@ public class GoogleRegistrationActivity extends AppCompatActivity {
 
     //Model
     public Usuario usuario;
-    private Bundle bundleModel;
+
+    //Bundle from AuthActivity
+    private Bundle bundle;
 
     //Fragment arguments;
-    public static final String BUNDLE_KEY = "bundle_key";
+    public static final String BUNDLE_KEY = "bundle_google_key";
     public static final String GOOGLE_FRAG_TAG = "google_registration";
 
     @Override
@@ -59,10 +63,12 @@ public class GoogleRegistrationActivity extends AppCompatActivity {
 
     private void getBundleFromActivity() {
 
-        bundleModel = getIntent().getExtras();
+        bundle = getIntent().getExtras();
 
-        if (bundleModel != null) {
-            usuario = (Usuario) bundleModel.get(AuthActivity.REGISTER_INTENT);
+        if (bundle != null) {
+
+            usuario = (Usuario) bundle.get(AuthActivity.BUNDLE_USER_INFO);
+
         }
 
     }
@@ -81,15 +87,17 @@ public class GoogleRegistrationActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-    }
 
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+
     }
 }

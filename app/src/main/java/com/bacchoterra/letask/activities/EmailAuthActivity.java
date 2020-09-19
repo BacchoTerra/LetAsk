@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.authfragments.CreateAccountFragment;
 import com.bacchoterra.letask.config.FirebaseConfig;
+import com.bacchoterra.letask.helper.MyHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -46,6 +47,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
     private FirebaseAuth mAuth;
 
     //Fragment initialization tags
+    public static final String BUNDLE_KEY = "bundle__email_key";
     public static final String EMAIL_FRAG_TAG = "email_registration";
 
 
@@ -124,7 +126,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void checkEmailAuthCredential(String email) {
+    private void checkEmailAuthCredential(final String email) {
 
         progressBar.setVisibility(View.VISIBLE);
         changeVisibilityWitFade(btnContinue);
@@ -145,12 +147,16 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
                     if (list.isEmpty()) {
                         editEmail.setEnabled(false);
 
-                        initFragment(new CreateAccountFragment(),R.anim.slide_in_down);
+                        initCreateAccountFragment();
+
+                        editEmail.setText(email);
 
 
                     } else if (list.contains(GoogleAuthProvider.PROVIDER_ID)) {
 
-                        //TODO: Snackbar mostrando que esse email tem um auth do google
+                        MyHelper.showSnackbarLong(R.string.already_registered_with_google,rootLayout);
+                        editEmail.setEnabled(false);
+
 
                     } else if (list.contains(EmailAuthProvider.PROVIDER_ID)) {
 
@@ -172,9 +178,17 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void initFragment(Fragment fragment,int animation){
+    private void initCreateAccountFragment(){
 
-        getSupportFragmentManager().beginTransaction().setCustomAnimations(animation,0).replace(R.id.email_activity_fragContainer,fragment, EMAIL_FRAG_TAG).commit();
+        CreateAccountFragment fragment = new CreateAccountFragment();
+
+        Bundle emailBundle = new Bundle();
+
+        emailBundle.putString(BUNDLE_KEY,editEmail.getText().toString());
+
+        fragment.setArguments(emailBundle);
+
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_down,0).replace(R.id.email_activity_fragContainer,fragment, EMAIL_FRAG_TAG).commit();
 
 
     }
@@ -202,6 +216,17 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    @Override
+    public void finish() {
+        super.finish();
 
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
 }

@@ -11,7 +11,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="create_a_new_account">Create a new account</string>
     <string name="password">Password</string>
-    <string name="use_6_char_or_more_with_letters_and_numbers">use 6 characters or more, with letters and numbers</string>
+    <string name="use_6_char_or_more">use 6 characters or more</string>
     <string name="birthdate">Birthdate</string>
     <string name="day_first">put day, month and year, in that order.</string>
     <string name="name">Name</string>
@@ -29,4 +29,8 @@
     <string name="please_select_your_country">Please, select your country</string>
     <string name="select_a_valid_country">Please select a country from our list</string>
     <string name="name_can_only_contain_letters">Name can only contain letters and spaces</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="name_should_countain_5_min">Name should countain a minimun of 5 chars</string>
+    <string name="error_creatin_account">Error creating account, try again in a few moments</string>
+    <string name="already_registered_with_google">This email is already registered with google sign in in this app</string>
 </resources>
