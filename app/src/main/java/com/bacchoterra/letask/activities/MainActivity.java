@@ -3,22 +3,24 @@ package com.bacchoterra.letask.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.config.FirebaseConfig;
+import com.bacchoterra.letask.helper.UsuarioFirebase;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
     private GoogleSignInClient mSignInClient;
-
 
 
     @Override
@@ -28,10 +30,12 @@ public class MainActivity extends AppCompatActivity {
 
         TextView txt = findViewById(R.id.rola);
 
-        FirebaseAuth auth = FirebaseConfig.getFBAuth();
+
+        final FirebaseUser user = UsuarioFirebase.getCurrentUser();
 
 
-        Toast.makeText(this, auth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), user.getDisplayName(), Toast.LENGTH_SHORT).show();
+
 
         txt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
                 mSignInClient = GoogleSignIn.getClient(MainActivity.this, googleSignInOptions);
 
                 mSignInClient.signOut();
+                FirebaseAuth d = FirebaseConfig.getFBAuth();
+
+                d.signOut();
                 finish();
 
 

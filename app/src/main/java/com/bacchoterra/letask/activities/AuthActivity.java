@@ -131,8 +131,22 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                 if (task.isSuccessful()){
 
                     if (task.getResult().getSignInMethods().contains(GoogleAuthProvider.PROVIDER_ID)){
-                        startActivity(new Intent(AuthActivity.this,MainActivity.class));
-                        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+
+                        MyHelper.showProgressDialog(AuthActivity.this);
+
+                        authCredential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
+
+                        mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()){
+                                    startActivity(new Intent
+                                            (AuthActivity.this,MainActivity.class));
+                                    overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                                    MyHelper.dismissProgressDialog();
+                                }
+                            }
+                        });
                     }else if (task.getResult().getSignInMethods().contains(EmailAuthProvider.PROVIDER_ID)){
 
                         MyHelper.showSnackbarLong(R.string.this_account_has_email_auth,btnEmailSignIn);
@@ -162,50 +176,6 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-
-        /*
-        rootRef.child(FirebaseConfig.USERS_NOD)
-                .child(Base64Custom.toBase64(email))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        if (snapshot.exists()) {
-
-                            startActivity(new Intent(AuthActivity.this,MainActivity.class));
-                            overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
-
-
-                        } else {
-
-                             authCredential = GoogleAuthProvider.getCredential(acc.getIdToken(), null);
-
-                             Usuario usuario = new Usuario();
-
-                             usuario.setName(acc.getDisplayName());
-                             usuario.setEmail(acc.getEmail());
-                             usuario.setId(Base64Custom.toBase64(acc.getEmail()));
-
-                            Intent intent = new Intent(AuthActivity.this, GoogleRegistrationActivity.class);
-
-                            intent.putExtra(BUNDLE_GOOGLE_USER_INFO_KEY,usuario);
-
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
-
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-
-         */
-
         MyHelper.dismissProgressDialog();
 
 

@@ -38,6 +38,7 @@ import com.bacchoterra.letask.activities.MainActivity;
 import com.bacchoterra.letask.config.FirebaseConfig;
 import com.bacchoterra.letask.helper.Base64Custom;
 import com.bacchoterra.letask.helper.MyHelper;
+import com.bacchoterra.letask.helper.UsuarioFirebase;
 import com.bacchoterra.letask.model.Usuario;
 import com.blongho.country_data.Country;
 import com.blongho.country_data.World;
@@ -265,6 +266,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                                     emailUsuario.setEmail(userEmail);
                                     emailUsuario.setCountry(country);
                                     emailUsuario.setId(Base64Custom.toBase64(userEmail));
+
+                                    UsuarioFirebase.updateUserName(emailUsuario.getName());
 
                                     saveUserInDatabase(emailUsuario);
 
