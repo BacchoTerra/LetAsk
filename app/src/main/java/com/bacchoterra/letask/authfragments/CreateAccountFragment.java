@@ -1,5 +1,6 @@
 package com.bacchoterra.letask.authfragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.os.ConfigurationCompat;
@@ -64,6 +66,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     //Context
     private Context context;
+    private Activity activity;
 
     //Layout components
     private View view;
@@ -114,6 +117,14 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         this.context = context;
         mAuth = FirebaseConfig.getFBAuth();
         rootRef = FirebaseConfig.getFBDatabase();
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        this.activity = getActivity();
 
     }
 
@@ -175,8 +186,6 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     private void createAccount() {
 
-        assert  getActivity() != null;
-        MyHelper.showProgressDialog(getActivity());
 
         assert editName.getText() != null;
 
@@ -191,6 +200,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
             if (name.length() >= 5 && isNameOnlyLetters(name)){
 
                 if (!country.isEmpty() && countryList.contains(country)){
+
+                    MyHelper.showProgressDialog(activity);
 
                     mAuth.signInWithCredential(AuthActivity.authCredential)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -239,6 +250,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                 if (!(password.length() <6) && !password.contains(" ")){
 
                     if (!country.isEmpty() && countryList.contains(country)){
+
+                        MyHelper.showProgressDialog(activity);
 
                         mAuth.createUserWithEmailAndPassword(userEmail,password)
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -297,9 +310,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                 if (task.isSuccessful()) {
                     context.startActivity(new Intent(getActivity(), MainActivity.class));
 
-                    assert  getActivity()!= null;
-                    getActivity().finish();
-                    getActivity().overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                    activity.finish();
+                    activity.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
 
                 } else {
                     deleteUserFromFBAuth();

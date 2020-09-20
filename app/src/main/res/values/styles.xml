@@ -11,4 +11,10 @@
 
     </style>
 
+    <style name="MyCornerDialog" parent="Theme.MaterialComponents.Dialog.Alert">
+
+        <item name="dialogCornerRadius">8dp</item>
+
+    </style>
+
 </resources>

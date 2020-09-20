@@ -120,10 +120,12 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
+                
                 if (task.isSuccessful()) {
 
                     activity.startActivity(new Intent(getActivity(), MainActivity.class));
                     activity.finish();
+                    activity.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
 
                 } else {
 

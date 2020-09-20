@@ -60,7 +60,7 @@ public abstract class MyHelper {
 
         @SuppressLint("InflateParams")
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_progress, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity,R.style.MyCornerDialog);
         builder.setView(view);
         builder.setCancelable(false);
 
