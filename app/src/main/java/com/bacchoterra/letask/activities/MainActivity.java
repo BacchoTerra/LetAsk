@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.config.FirebaseConfig;
+import com.bacchoterra.letask.helper.SharedPrefsUtil;
 import com.bacchoterra.letask.helper.UsuarioFirebase;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Toast.makeText(getApplicationContext(), user.getDisplayName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, SharedPrefsUtil.getUserCountry(this), Toast.LENGTH_SHORT).show();
 
 
         txt.setOnClickListener(new View.OnClickListener() {

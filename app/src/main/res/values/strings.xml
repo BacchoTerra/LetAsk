@@ -48,5 +48,6 @@
     <string name="error">Error</string>
     <string name="cancel">Cancel</string>
     <string name="welcome_to">Welcome to</string>
+    <string name="password_must_contain_6_chars">Password must contain at least 6 characters</string>
 
 </resources>

@@ -26,6 +26,7 @@ import com.bacchoterra.letask.activities.MainActivity;
 import com.bacchoterra.letask.config.FirebaseConfig;
 import com.bacchoterra.letask.helper.Base64Custom;
 import com.bacchoterra.letask.helper.MyHelper;
+import com.bacchoterra.letask.helper.SharedPrefsUtil;
 import com.bacchoterra.letask.helper.UsuarioFirebase;
 import com.bacchoterra.letask.model.Usuario;
 import com.blongho.country_data.Country;
@@ -178,103 +179,103 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
         if (getTag().equals(GoogleRegistrationActivity.GOOGLE_FRAG_TAG)) {
 
-            if (name.length() >= 5 && isNameOnlyLetters(name)){
+            if (name.length() >= 5 && isNameOnlyLetters(name)) {
 
-                if (!country.isEmpty() && countryList.contains(country)){
+                if (!country.isEmpty() && countryList.contains(country)) {
 
                     MyHelper.showProgressDialog(activity);
 
                     mAuth.signInWithCredential(AuthActivity.authCredential)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()){
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
 
 
-                                googleUsuario.setName(name);
-                                googleUsuario.setCountry(country);
+                                        googleUsuario.setName(name);
+                                        googleUsuario.setCountry(country);
 
-                                saveUserInDatabase(googleUsuario);
+                                        saveUserInDatabase(googleUsuario);
 
-                            }else {
-                                MyHelper.showSnackbarLong(R.string.error_creatin_account,view);
-                            }
-                        }
-                    });
+                                    } else {
+                                        MyHelper.showSnackbarLong(R.string.error_creatin_account, view);
+                                    }
+                                }
+                            });
 
-                }else if (country.isEmpty()){
-                    MyHelper.showSnackbarLong(R.string.please_select_your_country,view);
-                }else if (!countryList.contains(country)){
-                    MyHelper.showSnackbarLong(R.string.select_a_valid_country,view);
+                } else if (country.isEmpty()) {
+                    MyHelper.showSnackbarLong(R.string.please_select_your_country, view);
+                } else if (!countryList.contains(country)) {
+                    MyHelper.showSnackbarLong(R.string.select_a_valid_country, view);
                 }
 
 
-            }else if (name.length() <5){
-                MyHelper.showSnackbarLong(R.string.name_should_countain_5_min,view);
+            } else if (name.length() < 5) {
+                MyHelper.showSnackbarLong(R.string.name_should_countain_5_min, view);
 
-            }else if (!isNameOnlyLetters(name)){
-                MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters,view);
+            } else if (!isNameOnlyLetters(name)) {
+                MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters, view);
 
             }
 
 
         }
 
-        if (getTag().equals(EmailAuthActivity.EMAIL_REGISTRATION_FRAG_TAG)){
+        if (getTag().equals(EmailAuthActivity.EMAIL_REGISTRATION_FRAG_TAG)) {
 
 
-            assert  editPassword.getText() != null;
+            assert editPassword.getText() != null;
             String password = editPassword.getText().toString();
 
-            if (name.length() >= 5 &&isNameOnlyLetters(name)){
+            if (name.length() >= 5 && isNameOnlyLetters(name)) {
 
-                if (!(password.length() <6) && !password.contains(" ")){
+                if (!(password.length() < 6) && !password.contains(" ")) {
 
-                    if (!country.isEmpty() && countryList.contains(country)){
+                    if (!country.isEmpty() && countryList.contains(country)) {
 
                         MyHelper.showProgressDialog(activity);
 
-                        mAuth.createUserWithEmailAndPassword(userEmail,password)
+                        mAuth.createUserWithEmailAndPassword(userEmail, password)
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                                if (task.isSuccessful()){
+                                        if (task.isSuccessful()) {
 
-                                    emailUsuario = new Usuario();
-                                    emailUsuario.setName(name);
-                                    emailUsuario.setEmail(userEmail);
-                                    emailUsuario.setCountry(country);
-                                    emailUsuario.setId(Base64Custom.toBase64(userEmail));
+                                            emailUsuario = new Usuario();
+                                            emailUsuario.setName(name);
+                                            emailUsuario.setEmail(userEmail);
+                                            emailUsuario.setCountry(country);
+                                            emailUsuario.setId(Base64Custom.toBase64(userEmail));
 
-                                    UsuarioFirebase.updateUserName(emailUsuario.getName());
+                                            saveUserInDatabase(emailUsuario);
 
-                                    saveUserInDatabase(emailUsuario);
+                                        }
 
-                                }
-
-                            }
-                        });
+                                    }
+                                });
 
 
-
-                    }else if (country.isEmpty()){
-                        MyHelper.showSnackbarLong(R.string.please_select_your_country,view);
-                    }else if (!countryList.contains(country)){
-                        MyHelper.showSnackbarLong(R.string.select_a_valid_country,view);
+                    } else if (country.isEmpty()) {
+                        MyHelper.showSnackbarLong(R.string.please_select_your_country, view);
+                    } else if (!countryList.contains(country)) {
+                        MyHelper.showSnackbarLong(R.string.select_a_valid_country, view);
                     }
 
-                }else {
+                } else if (password.length() < 6) {
 
-                    MyHelper.showSnackbarLong(R.string.invalid_password,view);
+                    MyHelper.showSnackbarLong(R.string.password_must_contain_6_chars, view);
 
+                } else {
+
+                    MyHelper.showSnackbarLong(R.string.invalid_password, view);
                 }
 
-            }else if (name.length() <5){
-                MyHelper.showSnackbarLong(R.string.name_should_countain_5_min,view);
+            } else if (name.length() < 5) {
+                MyHelper.showSnackbarLong(R.string.name_should_countain_5_min, view);
 
-            }else if (!isNameOnlyLetters(name)){
-                MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters,view);
+            } else if (!isNameOnlyLetters(name)) {
+                MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters, view);
 
             }
 
@@ -284,17 +285,19 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
     }
 
-    private void saveUserInDatabase(Usuario user) {
+    private void saveUserInDatabase(final Usuario user) {
 
         rootRef.child(FirebaseConfig.USERS_NOD).child(user.getId()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
                 if (task.isSuccessful()) {
+
+                    SharedPrefsUtil.saveUserCountry(context, user.getCountry());
                     context.startActivity(new Intent(getActivity(), MainActivity.class));
 
                     activity.finish();
-                    activity.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                    activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
                 } else {
                     deleteUserFromFBAuth();
@@ -309,8 +312,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     }
 
 
-    private void deleteUserFromFBAuth(){
-        assert  mAuth.getCurrentUser() != null;
+    private void deleteUserFromFBAuth() {
+        assert mAuth.getCurrentUser() != null;
         mAuth.getCurrentUser().delete();
     }
 
@@ -340,13 +343,12 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     public void onClick(View view) {
 
 
+        if (view == btnSignIn) {
 
-        if (view == btnSignIn){
-
-            if (MyHelper.netConn(context)){
+            if (MyHelper.netConn(context)) {
                 createAccount();
-            }else {
-                MyHelper.showSnackbarLong(R.string.no_internet_connection,view);
+            } else {
+                MyHelper.showSnackbarLong(R.string.no_internet_connection, view);
             }
 
 
