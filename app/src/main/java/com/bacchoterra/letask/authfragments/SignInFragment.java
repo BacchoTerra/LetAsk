@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.activities.EmailAuthActivity;
@@ -120,7 +119,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
-                
+
                 if (task.isSuccessful()) {
 
                     activity.startActivity(new Intent(getActivity(), MainActivity.class));

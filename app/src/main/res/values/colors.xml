@@ -19,6 +19,7 @@
 
     <color name="greenCheck">#4caf50</color>
     <color name="redWrong">#F44336</color>
+    <color name="black">#000000</color>
 
 
 </resources>

@@ -9,8 +9,6 @@ import android.widget.FrameLayout;
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.authfragments.CreateAccountFragment;
 import com.bacchoterra.letask.model.Usuario;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.GoogleAuthCredential;
 
 public class GoogleRegistrationActivity extends AppCompatActivity {
 

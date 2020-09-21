@@ -3,7 +3,6 @@ package com.bacchoterra.letask.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.transition.Fade;
 import androidx.transition.TransitionManager;
 
@@ -13,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +41,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
     private TextView txtHeadline;
     private TextInputLayout inputLayoutEmail;
     private TextInputEditText editEmail;
+    private ImageView imageDelete;
     private Button btnContinue;
     private ProgressBar progressBar;
 
@@ -75,11 +76,13 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
         toolbar = findViewById(R.id.email_activity_toolbar);
         txtHeadline = findViewById(R.id.email_Activity_txtHeadline);
         inputLayoutEmail = findViewById(R.id.email_Activity_inputLayoutEmail);
+        imageDelete = findViewById(R.id.auth_activity_imageViewDelete);
         editEmail = findViewById(R.id.email_Activity_editEmail);
         btnContinue = findViewById(R.id.email_Activity_btnConfirmEmail);
         progressBar = findViewById(R.id.email_activity_progressBar);
 
         btnContinue.setOnClickListener(this);
+        imageDelete.setOnClickListener(this);
 
 
     }
@@ -157,6 +160,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
                         MyHelper.showSnackbarLong(R.string.already_registered_with_google,rootLayout);
                         editEmail.setEnabled(false);
+                        imageDelete.setVisibility(View.VISIBLE);
 
 
                     } else if (list.contains(EmailAuthProvider.PROVIDER_ID)) {
@@ -222,12 +226,19 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
 
-        if (view == btnContinue) {
+        switch (view.getId()){
 
-            String email = editEmail.getText().toString();
+            case R.id.email_Activity_btnConfirmEmail:
+                String email = editEmail.getText().toString();
+                checkEmailAuthCredential(email);
+                break;
 
-            checkEmailAuthCredential(email);
+            case R.id.auth_activity_imageViewDelete:
 
+                editEmail.setEnabled(true);
+                editEmail.setText(null);
+                imageDelete.setVisibility(View.GONE);
+                btnContinue.setVisibility(View.VISIBLE);
 
 
         }
