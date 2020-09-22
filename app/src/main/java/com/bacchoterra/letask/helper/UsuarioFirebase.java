@@ -49,6 +49,8 @@ public class UsuarioFirebase {
 
                    if (!task.isSuccessful()){
                        Log.d("TAG: name update", "onComplete: Failure updating name");
+                   }else {
+                       Log.d("TAG: name update", "onComplete: success updating name");
                    }
 
                }

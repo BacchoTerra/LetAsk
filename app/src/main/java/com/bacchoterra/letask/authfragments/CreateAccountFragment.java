@@ -248,6 +248,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                                             emailUsuario.setCountry(country);
                                             emailUsuario.setId(Base64Custom.toBase64(userEmail));
 
+                                            UsuarioFirebase.updateUserName(emailUsuario.getName());
+
                                             saveUserInDatabase(emailUsuario);
 
                                         }
@@ -292,8 +294,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
             public void onComplete(@NonNull Task<Void> task) {
 
                 if (task.isSuccessful()) {
-
-                    SharedPrefsUtil.saveUserCountry(context, user.getCountry());
+                    SharedPrefsUtil.saveUserCountry(context,user.getCountry(),user.getEmail());
                     context.startActivity(new Intent(getActivity(), MainActivity.class));
 
                     activity.finish();

@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FirebaseConfig {
 
     public static final String USERS_NOD = "Users";
+    public static final String COUNTRY_NOD = "country";
 
     //Firebase components
     private static FirebaseAuth mAuth;

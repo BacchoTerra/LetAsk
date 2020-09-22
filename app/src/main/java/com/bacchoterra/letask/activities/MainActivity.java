@@ -1,5 +1,6 @@
 package com.bacchoterra.letask.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -30,13 +31,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         TextView txt = findViewById(R.id.rola);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-
-        final FirebaseUser user = UsuarioFirebase.getCurrentUser();
-
-
-        Toast.makeText(getApplicationContext(), user.getDisplayName(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, SharedPrefsUtil.getUserCountry(this), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, user.getEmail(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, SharedPrefsUtil.getUserCountry(this,user.getEmail()), Toast.LENGTH_SHORT).show();
 
 
         txt.setOnClickListener(new View.OnClickListener() {
