@@ -67,5 +67,6 @@
     <string name="logout">Logout</string>
     <string name="yes">Yes</string>
     <string name="error_fetching_name">Error fetching name</string>
+    <string name="try_again">Try again</string>
 
 </resources>
