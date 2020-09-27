@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.res.ColorStateList;
@@ -11,6 +12,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navView;
     private BottomNavigationViewEx bottomNavigationViewEx;
+    private FrameLayout containerLayout;
 
 
     @Override
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         initToolbarAndDrawer();
         initBottomNavigation();
+        configContainerLayoutBounds();
 
     }
 
@@ -82,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.activity_main_drawerLayout);
         navView = findViewById(R.id.activity_main_navView);
         bottomNavigationViewEx = findViewById(R.id.activity_main_bottomNavView);
+        containerLayout = findViewById(R.id.activity_main_containerLayout);
 
     }
 
@@ -104,6 +110,24 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationViewEx.setIconSize(28);
 
+
+    }
+
+    private void configContainerLayoutBounds(){
+
+        bottomNavigationViewEx.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                bottomNavigationViewEx.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                int min_bottom_marg = bottomNavigationViewEx.getHeight();
+                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) containerLayout.getLayoutParams();
+
+                params.setMargins(0,0,0,min_bottom_marg);
+                containerLayout.setLayoutParams(params);
+
+            }
+        });
 
     }
 }
