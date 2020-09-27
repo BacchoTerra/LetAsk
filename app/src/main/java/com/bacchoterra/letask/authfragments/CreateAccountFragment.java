@@ -3,6 +3,7 @@ package com.bacchoterra.letask.authfragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,8 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.fragment.app.Fragment;
 
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -164,6 +167,15 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
         return true;
 
+        /*Pattern p = Pattern.compile("[a-zA-z ]{5,50}");
+
+        Matcher m = p.matcher(name);
+
+
+        return m.matches();
+
+         */
+
     }
 
     private void createAccount() {
@@ -294,7 +306,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
             public void onComplete(@NonNull Task<Void> task) {
 
                 if (task.isSuccessful()) {
-                    SharedPrefsUtil.saveUserCountry(context,user.getCountry(),user.getEmail());
+                    SharedPrefsUtil.saveUserCountry(context, user.getCountry(), user.getEmail());
                     context.startActivity(new Intent(getActivity(), MainActivity.class));
 
                     activity.finish();
@@ -356,4 +368,6 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         }
 
     }
+
+
 }

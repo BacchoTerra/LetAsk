@@ -42,12 +42,15 @@ dependencies {
 
     //Google play-services
     implementation 'com.google.android.gms:play-services-auth:18.1.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
 
     //https://github.com/hdodenhof/CircleImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     //https://github.com/blongho/worldCountryData
     implementation 'com.github.blongho:worldCountryData:1.5'
+
+    //https://github.com/ittianyu/BottomNavigationViewEx
+    implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
 
 }

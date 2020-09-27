@@ -32,6 +32,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmailAuthActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,6 +49,10 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
     //Firebase components
     private FirebaseAuth mAuth;
+
+    //Regex components
+    private Pattern pattern;
+    private Matcher matcher;
 
     //Fragment initialization tags
     public static final String BUNDLE_KEY = "bundle__email_key";
@@ -67,6 +73,8 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
         initTextWatcher();
 
         mAuth = FirebaseConfig.getFBAuth();
+
+        pattern = Pattern.compile("\\w+@\\w+\\..+");
 
     }
 
@@ -117,7 +125,8 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
                 String current = editable.toString();
 
-                if (current.contains("@") && current.contains(".com") && current.length() >= 6) {
+
+                if (current.contains("@") && current.contains(".") && current.length() >= 6) {
 
                     btnContinue.setEnabled(true);
 
