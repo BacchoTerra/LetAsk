@@ -59,5 +59,11 @@
     <string name="answer">Answer</string>
     <string name="profile">Profile</string>
     <string name="ask">Ask</string>
+    <string name="messages">Messages</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="followed_questions">Followed questions</string>
+    <string name="about_us">About Us</string>
+    <string name="notifications">Notifications</string>
+    <string name="logout">Logout</string>
 
 </resources>

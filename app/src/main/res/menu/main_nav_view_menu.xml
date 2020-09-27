@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/main_nav_view_messages"
+        android:title="@string/messages"
+        android:icon="@drawable/ic_round_chat_24"/>
+
+    <item
+        android:id="@+id/main_nav_view_leaderBoards"
+        android:title="@string/leaderboards"
+        android:icon="@drawable/ic_round_emoji_events_24"/>
+
+    <item
+        android:id="@+id/main_nav_view_followed_questions"
+        android:title="@string/followed_questions"
+        android:icon="@drawable/ic_baseline_bookmark_24"/>
+
+    <item
+        android:id="@+id/main_nav_view_aboutUs"
+        android:title="@string/about_us"
+        android:icon="@drawable/ic_baseline_info_24"/>
+
+    <item
+        android:id="@+id/main_nav_view_notifications"
+        android:title="@string/notifications"
+        android:icon="@drawable/ic_baseline_notifications_24"/>
+
+
+</menu>

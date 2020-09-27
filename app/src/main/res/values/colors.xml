@@ -23,6 +23,7 @@
 
     <color name="bottomNavSelected">@color/colorPrimary</color>
     <color name="bottomNavUnselected">#AAAAAA</color>
+    <color name="main_nav_item_color">#000000</color>
 
 
 </resources>
