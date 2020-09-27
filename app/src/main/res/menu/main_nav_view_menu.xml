@@ -4,27 +4,27 @@
     <item
         android:id="@+id/main_nav_view_messages"
         android:title="@string/messages"
-        android:icon="@drawable/ic_round_chat_24"/>
+        android:icon="@drawable/ic_outline_chat_24"/>
 
     <item
         android:id="@+id/main_nav_view_leaderBoards"
         android:title="@string/leaderboards"
-        android:icon="@drawable/ic_round_emoji_events_24"/>
+        android:icon="@drawable/ic_outline_emoji_events_24"/>
 
     <item
         android:id="@+id/main_nav_view_followed_questions"
         android:title="@string/followed_questions"
-        android:icon="@drawable/ic_baseline_bookmark_24"/>
+        android:icon="@drawable/ic_baseline_bookmark_border_24"/>
 
-    <item
-        android:id="@+id/main_nav_view_aboutUs"
-        android:title="@string/about_us"
-        android:icon="@drawable/ic_baseline_info_24"/>
 
     <item
         android:id="@+id/main_nav_view_notifications"
         android:title="@string/notifications"
-        android:icon="@drawable/ic_baseline_notifications_24"/>
+        android:icon="@drawable/ic_outline_notifications_24"/>
 
+    <item
+        android:id="@+id/main_nav_view_aboutUs"
+        android:title="@string/about_us"
+        android:icon="@drawable/ic_outline_info_24"/>
 
 </menu>

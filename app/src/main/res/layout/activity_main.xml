@@ -19,7 +19,8 @@
         app:headerLayout="@layout/activity_main_drawer_header"
         app:itemIconTint="@color/main_nav_item_color"
         app:itemTextAppearance="@style/TextAppearance.AppCompat.Small"
-        app:menu="@menu/main_nav_view_menu" >
+        app:menu="@menu/main_nav_view_menu">
+
 
     </com.google.android.material.navigation.NavigationView>
 

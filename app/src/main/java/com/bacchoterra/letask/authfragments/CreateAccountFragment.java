@@ -256,9 +256,9 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
                                             emailUsuario = new Usuario();
                                             emailUsuario.setName(name);
-                                            emailUsuario.setEmail(userEmail);
+                                            emailUsuario.setEmail(userEmail.toLowerCase());
                                             emailUsuario.setCountry(country);
-                                            emailUsuario.setId(Base64Custom.toBase64(userEmail));
+                                            emailUsuario.setId(Base64Custom.toBase64(userEmail.toLowerCase()));
 
                                             UsuarioFirebase.updateUserName(emailUsuario.getName());
 
@@ -307,9 +307,11 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
                 if (task.isSuccessful()) {
                     SharedPrefsUtil.saveUserCountry(context, user.getCountry(), user.getEmail());
-                    context.startActivity(new Intent(getActivity(), MainActivity.class));
+                    Intent intent = new Intent(getActivity(),MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-                    activity.finish();
+                    context.startActivity(intent);
+
                     activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
                 } else {

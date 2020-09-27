@@ -65,5 +65,7 @@
     <string name="about_us">About Us</string>
     <string name="notifications">Notifications</string>
     <string name="logout">Logout</string>
+    <string name="yes">Yes</string>
+    <string name="error_fetching_name">Error fetching name</string>
 
 </resources>

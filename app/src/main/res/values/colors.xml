@@ -25,5 +25,9 @@
     <color name="bottomNavUnselected">#AAAAAA</color>
     <color name="main_nav_item_color">#000000</color>
 
+    <color name="darkModeIconColor">#457</color>
+
+    <color name="regularIconColor">#ff000000</color>
+
 
 </resources>

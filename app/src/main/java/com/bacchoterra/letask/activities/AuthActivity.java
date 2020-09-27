@@ -140,6 +140,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                                             (AuthActivity.this,MainActivity.class));
                                     overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
                                     MyHelper.dismissProgressDialog();
+                                    finish();
                                 }
                             }
                         });
