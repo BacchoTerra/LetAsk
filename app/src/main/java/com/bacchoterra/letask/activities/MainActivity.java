@@ -7,12 +7,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -20,6 +23,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.config.FirebaseConfig;
@@ -34,6 +38,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -71,6 +76,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Strings
     private String userCountry;
     private String userProvider;
+
+    //Extras
+    private boolean needToRefreshUserInfo = false;
+    private Button btnRefreshUserInfo;
+    public static final int BTN_REFRESH_ID = 45;
 
 
     @Override
@@ -118,25 +128,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initToolbarAndDrawer() {
 
-
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
-
+        createToolbarButton();
         ActionBarDrawerToggle abdt = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
 
         drawerLayout.addDrawerListener(abdt);
         abdt.syncState();
 
+    }
+
+    private void createToolbarButton(){
+
+        btnRefreshUserInfo = new Button(this);
+        btnRefreshUserInfo.setText(R.string.refresh);
+        btnRefreshUserInfo.setVisibility(View.GONE);
+        btnRefreshUserInfo.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.shape_button_all_round_primary_color,null));
+        btnRefreshUserInfo.setTextColor(getResources().getColor(R.color.white));
+        btnRefreshUserInfo.setId(BTN_REFRESH_ID);
+        btnRefreshUserInfo.setOnClickListener(this);
+
+
+        toolbar.addView(btnRefreshUserInfo);
+
+
 
     }
 
-    //TODO: se a task nao for successful, adicionar um botao de refresh para tentar recuperar os dados dnv;
     private void bindUserInfoInDrawer() {
+
+        btnRefreshUserInfo.setVisibility(View.GONE);
 
         mAuth.getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
+
                     user = mAuth.getCurrentUser();
                     txtUserName.setText(user.getDisplayName());
                     handleUserCountry(user.getEmail());
@@ -145,6 +171,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 } else {
                     txtUserName.setText(R.string.error_fetching_user_info);
+                    btnRefreshUserInfo.setVisibility(View.VISIBLE);
+                    Toast.makeText(MainActivity.this, R.string.error_fetching_user_information, Toast.LENGTH_SHORT).show();
+                    Snackbar.make(containerLayout,"sdasd",Snackbar.LENGTH_INDEFINITE).show();
+
 
                 }
             }
@@ -154,17 +184,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void handleUserProfilePicture() {
 
-        if (user.getPhotoUrl() != null){
+        if (user.getPhotoUrl() != null) {
             Glide.with(this).load(user.getPhotoUrl()).into(imageUserPic);
-        }else {
+        } else {
             Random r = new Random();
 
 
             int choice = r.nextInt(2);
 
-            if (choice == 0){
+            if (choice == 0) {
                 Glide.with(this).load(R.drawable.ic_undraw_male_avatar).into(imageUserPic);
-            }else {
+            } else {
                 Glide.with(this).load(R.drawable.ic_undraw_female_avatar).into(imageUserPic);
             }
         }
@@ -234,10 +264,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, AuthActivity.class));
             finish();
 
-        }else if (!MyHelper.netConn(this)){
-            MyHelper.showSnackbarLong(R.string.no_internet_connection,drawerLayout);
-        }else {
-            MyHelper.showSnackbarLong(R.string.please_refresh_user_info,drawerLayout);
+        } else if (!MyHelper.netConn(this)) {
+            MyHelper.showSnackbarLong(R.string.no_internet_connection, drawerLayout);
+        } else {
+            MyHelper.showSnackbarLong(R.string.please_refresh_user_info, drawerLayout);
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
         }
 
 
@@ -314,8 +347,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.header_layout_imageExit:
 
                 createExitDialog();
+                break;
+            case BTN_REFRESH_ID:
+                bindUserInfoInDrawer();
 
 
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }else {
+            super.onBackPressed();
         }
 
     }
