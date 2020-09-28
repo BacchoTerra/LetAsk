@@ -157,6 +157,8 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                         usuario.setName(acc.getDisplayName());
                         usuario.setEmail(acc.getEmail());
                         usuario.setId(Base64Custom.toBase64(acc.getEmail()));
+                        assert acc.getPhotoUrl() != null;
+                        usuario.setUserPicUrl(acc.getPhotoUrl().toString());
 
                         Intent intent = new Intent(AuthActivity.this, GoogleRegistrationActivity.class);
 
@@ -216,4 +218,5 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
 }

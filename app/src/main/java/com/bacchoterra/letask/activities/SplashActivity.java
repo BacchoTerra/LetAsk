@@ -44,7 +44,7 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    private void initViews(){
+    private void initViews() {
         rootLayout = findViewById(R.id.activity_splash_rootLayout);
         btnTryAgain = findViewById(R.id.activity_splash_btnTryAgain);
 
@@ -69,8 +69,10 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(new Intent(SplashActivity.this, AuthActivity.class));
             }
 
-        }else {
-            MyHelper.showSnackbarLong(R.string.no_internet_connection,rootLayout);
+            finish();
+
+        } else {
+            MyHelper.showSnackbarLong(R.string.no_internet_connection, rootLayout);
             btnTryAgain.setVisibility(View.VISIBLE);
         }
 

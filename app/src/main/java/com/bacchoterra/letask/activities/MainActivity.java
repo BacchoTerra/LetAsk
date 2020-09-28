@@ -44,6 +44,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import java.util.Random;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Firebase
     private FirebaseAuth mAuth;
     private DatabaseReference rootRef;
-    FirebaseUser user;
+    private FirebaseUser user;
 
     //Strings
     private String userCountry;
@@ -137,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     user = mAuth.getCurrentUser();
                     txtUserName.setText(user.getDisplayName());
                     handleUserCountry(user.getEmail());
+                    handleUserProfilePicture();
 
 
                 } else {
@@ -144,6 +147,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+
+    }
+
+    private void handleUserProfilePicture() {
+
+        if (user.getPhotoUrl() != null){
+            Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(imageUserPic);
+        }else {
+            Random r = new Random();
+
+
+            int choice = r.nextInt(2);
+
+            if (choice == 0){
+                Glide.with(this).load(R.drawable.ic_undraw_male_avatar).into(imageUserPic);
+            }else {
+                Glide.with(this).load(R.drawable.ic_undraw_female_avatar).into(imageUserPic);
+            }
+        }
 
 
     }

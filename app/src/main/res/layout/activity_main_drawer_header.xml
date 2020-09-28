@@ -13,9 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="8dp"
-        android:src="@drawable/ic_baseline_account_circle_24"
-        app:civ_border_color="@color/colorAccent"
-        app:civ_border_width="1dp"
+        tools:src="@drawable/ic_undraw_male_avatar"
         app:layout_constraintBottom_toTopOf="@+id/header_layout_txtUserName"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -31,7 +29,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/textPrimaryColor"
         android:textStyle="bold"
-        app:drawableRightCompat="@drawable/ic_round_settings_24"
+        app:drawableRightCompat="@drawable/ic_round_keyboard_arrow_right_24"
         app:drawableTint="@color/regularIconColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

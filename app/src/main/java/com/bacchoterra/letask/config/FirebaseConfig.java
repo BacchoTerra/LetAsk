@@ -3,6 +3,8 @@ package com.bacchoterra.letask.config;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class FirebaseConfig {
 
@@ -11,7 +13,8 @@ public class FirebaseConfig {
 
     //Firebase components
     private static FirebaseAuth mAuth;
-    private static DatabaseReference mRef;
+    private static DatabaseReference mDatabaseRef;
+    private static StorageReference mStorageRef;
 
 
 
@@ -26,11 +29,21 @@ public class FirebaseConfig {
     public static DatabaseReference getFBDatabase(){
 
 
-        if (mRef == null){
-            mRef = FirebaseDatabase.getInstance().getReference();
+        if (mDatabaseRef == null){
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         }
 
-        return mRef;
+        return mDatabaseRef;
+    }
+
+    public static StorageReference getFBStorage(){
+
+        if (mStorageRef == null){
+            mStorageRef = FirebaseStorage.getInstance().getReference();
+        }
+
+        return mStorageRef;
+
     }
 
 

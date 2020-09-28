@@ -11,7 +11,16 @@ public class Usuario implements Serializable {
     private String id;
     private String email;
     private String country;
+    private String userPicUrl;
     private Long birthDate;
+
+    public String getUserPicUrl() {
+        return userPicUrl;
+    }
+
+    public void setUserPicUrl(String userPicUrl) {
+        this.userPicUrl = userPicUrl;
+    }
 
     public String getPassWord() {
         return passWord;

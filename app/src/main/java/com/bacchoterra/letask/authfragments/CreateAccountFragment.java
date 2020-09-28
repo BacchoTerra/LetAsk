@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -207,6 +209,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                                         googleUsuario.setName(name);
                                         googleUsuario.setCountry(country);
 
+
                                         saveUserInDatabase(googleUsuario);
 
                                     } else {
@@ -370,6 +373,5 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         }
 
     }
-
 
 }
