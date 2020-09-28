@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.DialogInterface;
@@ -15,11 +14,12 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.config.FirebaseConfig;
@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    //TODO: se a task nao for successful, adicionar um botao de refresh para tentar recuperar os dados dnv;
     private void bindUserInfoInDrawer() {
 
         mAuth.getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -143,7 +144,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 } else {
-                    txtUserName.setText(R.string.error_fetching_name);
+                    txtUserName.setText(R.string.error_fetching_user_info);
+
                 }
             }
         });
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void handleUserProfilePicture() {
 
         if (user.getPhotoUrl() != null){
-            Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(imageUserPic);
+            Glide.with(this).load(user.getPhotoUrl()).into(imageUserPic);
         }else {
             Random r = new Random();
 
@@ -210,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void logout() {
 
-        if (MyHelper.netConn(this)) {
+        if (MyHelper.netConn(this) && user != null) {
 
 
             if (getUserProvider().equals(GoogleAuthProvider.PROVIDER_ID)) {
@@ -232,8 +234,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, AuthActivity.class));
             finish();
 
-        }else {
+        }else if (!MyHelper.netConn(this)){
             MyHelper.showSnackbarLong(R.string.no_internet_connection,drawerLayout);
+        }else {
+            MyHelper.showSnackbarLong(R.string.please_refresh_user_info,drawerLayout);
         }
 
 

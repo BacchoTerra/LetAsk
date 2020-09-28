@@ -66,7 +66,8 @@
     <string name="notifications">Notifications</string>
     <string name="logout">Logout</string>
     <string name="yes">Yes</string>
-    <string name="error_fetching_name">Error fetching name</string>
+    <string name="error_fetching_user_info">Error fetching user info</string>
     <string name="try_again">Try again</string>
+    <string name="please_refresh_user_info">Please, refresh your information</string>
 
 </resources>
