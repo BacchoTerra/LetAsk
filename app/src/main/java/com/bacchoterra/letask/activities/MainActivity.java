@@ -14,10 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -30,6 +27,7 @@ import com.bacchoterra.letask.config.FirebaseConfig;
 import com.bacchoterra.letask.helper.Base64Custom;
 import com.bacchoterra.letask.helper.MyHelper;
 import com.bacchoterra.letask.helper.SharedPrefsUtil;
+import com.bacchoterra.letask.model.Usuario;
 import com.blongho.country_data.World;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -71,16 +69,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Firebase
     private FirebaseAuth mAuth;
     private DatabaseReference rootRef;
-    private FirebaseUser user;
+    private FirebaseUser firebaseUser;
 
     //Strings
     private String userCountry;
     private String userProvider;
 
     //Extras
-    private boolean needToRefreshUserInfo = false;
     private Button btnRefreshUserInfo;
     public static final int BTN_REFRESH_ID = 45;
+    private Usuario usuario = new Usuario();
+    public static final String KEY_FOR_USER_VALUES = "user_value_key";
 
 
     @Override
@@ -123,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         imageExit.setOnClickListener(this);
+        txtUserName.setOnClickListener(this);
 
     }
 
@@ -158,14 +158,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnRefreshUserInfo.setVisibility(View.GONE);
 
+
         mAuth.getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
 
-                    user = mAuth.getCurrentUser();
-                    txtUserName.setText(user.getDisplayName());
-                    handleUserCountry(user.getEmail());
+                    firebaseUser = mAuth.getCurrentUser();
+                    usuario.setName(firebaseUser.getDisplayName());
+                    txtUserName.setText(usuario.getName());
+                    handleUserCountry(firebaseUser.getEmail());
                     handleUserProfilePicture();
 
 
@@ -184,8 +186,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void handleUserProfilePicture() {
 
-        if (user.getPhotoUrl() != null) {
-            Glide.with(this).load(user.getPhotoUrl()).into(imageUserPic);
+        if (firebaseUser.getPhotoUrl() != null) {
+            Glide.with(this).load(firebaseUser.getPhotoUrl()).into(imageUserPic);
+            usuario.setUserPicUrl(firebaseUser.getPhotoUrl().toString());
         } else {
             Random r = new Random();
 
@@ -238,11 +241,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     });
         }
 
+        usuario.setCountry(userCountry);
+
     }
 
     private void logout() {
 
-        if (MyHelper.netConn(this) && user != null) {
+        if (MyHelper.netConn(this) && firebaseUser != null) {
 
 
             if (getUserProvider().equals(GoogleAuthProvider.PROVIDER_ID)) {
@@ -279,9 +284,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String getUserProvider() {
 
 
-        if (user != null) {
+        if (firebaseUser != null) {
 
-            for (UserInfo userInfo : user.getProviderData()) {
+            for (UserInfo userInfo : firebaseUser.getProviderData()) {
 
                 userProvider = userInfo.getProviderId();
 
@@ -350,6 +355,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case BTN_REFRESH_ID:
                 bindUserInfoInDrawer();
+                break;
+
+            case R.id.header_layout_txtUserName:
+                Intent intent = new Intent(this,ProfileEditActivity.class);
+                intent.putExtra(KEY_FOR_USER_VALUES,usuario);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+
 
 
         }
