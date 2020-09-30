@@ -14,6 +14,7 @@ import com.bacchoterra.letask.model.UsuarioInformation;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.CornerTreatment;
@@ -24,7 +25,9 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     //Layout components
     private Toolbar toolbar;
+    private ShapeableImageView imageUserPic;
     private TextInputEditText editName;
+
 
     //Model
     private Usuario usuario;
@@ -39,6 +42,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     private void init() {
         initViews();
+        customizeShapeableImageView();
         getBundle();
         initToolbar();
         fetchUserInformation();
@@ -48,7 +52,18 @@ public class ProfileEditActivity extends AppCompatActivity {
     private void initViews() {
 
         toolbar = findViewById(R.id.activity_profile_edit_toolbar);
+        imageUserPic = findViewById(R.id.activity_profile_edit_imageUserPic);
         editName = findViewById(R.id.activity_profile_edit_editName);
+    }
+
+    private void customizeShapeableImageView(){
+
+        ShapeAppearanceModel.Builder builder = imageUserPic.getShapeAppearanceModel().toBuilder();
+
+        builder.setAllCorners(CornerFamily.ROUNDED,30);
+
+        imageUserPic.setShapeAppearanceModel(builder.build());
+
     }
 
     private void getBundle (){
@@ -92,9 +107,28 @@ public class ProfileEditActivity extends AppCompatActivity {
     }
 
     private void handleUserInformation(Usuario mUser){
+
         editName.setText(mUser.getName());
 
+        if (mUser.getUserPicUrl() != null){
+            Glide.with(this).load(mUser.getUserPicUrl()).into(imageUserPic);
+        }else {
+            Glide.with(this).load(R.drawable.ic_undraw_male_avatar).into(imageUserPic);
+        }
 
+
+
+    }
+
+    private void createMaterialDatePicker(){
+
+        MaterialDatePicker.Builder<Long> builder= MaterialDatePicker.Builder.datePicker();
+
+        builder.setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR);
+
+        MaterialDatePicker<Long> materialDatePicker = builder.build();
+
+        materialDatePicker.show(getSupportFragmentManager(),null);
 
     }
 

@@ -10,24 +10,26 @@
     <color name="textPrimaryColor">#000000</color>
     <color name="textSecondaryColor">#737373</color>
 
-    <color name="homeAsUpIndicator">#000000</color>
+    <color name="homeAsUpIndicatorColor">#000000</color>
     <color name="statusBarColor">#f7f7f8</color>
 
-    <color name="btnEnabled">@color/colorPrimary</color>
-    <color name="btnDisabled">#BABABA</color>
-    <color name="cardBackground">#ffffff</color>
+    <color name="btnEnabledColor">@color/colorPrimary</color>
+    <color name="btnDisabledColor">#BABABA</color>
+    <color name="cardBackgroundColor">#ffffff</color>
 
     <color name="greenCheck">#4caf50</color>
     <color name="redWrong">#F44336</color>
     <color name="black">#000000</color>
 
-    <color name="bottomNavSelected">@color/colorPrimary</color>
-    <color name="bottomNavUnselected">#AAAAAA</color>
-    <color name="main_nav_item_color">#000000</color>
+    <color name="bottomNavSelectedColor">@color/colorPrimary</color>
+    <color name="bottomNavUnselectedColor">#AAAAAA</color>
+    <color name="MainNavViewIconColor">#000000</color>
 
     <color name="darkModeIconColor">#457</color>
 
     <color name="regularIconColor">#ff000000</color>
+
+    <color name="backgroundColor">#e6e7e8</color>
 
 
 </resources>

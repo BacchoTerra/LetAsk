@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/activity_main_drawer_header"
-        app:itemIconTint="@color/main_nav_item_color"
+        app:itemIconTint="@color/MainNavViewIconColor"
         app:itemTextAppearance="@style/TextAppearance.AppCompat.Small"
         app:menu="@menu/main_nav_view_menu">
 
