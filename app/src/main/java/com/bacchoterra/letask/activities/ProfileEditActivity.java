@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ public class ProfileEditActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ShapeableImageView imageUserPic;
     private TextInputEditText editName;
+    private TextInputEditText editDesc;
 
 
     //Model
@@ -54,6 +56,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.activity_profile_edit_toolbar);
         imageUserPic = findViewById(R.id.activity_profile_edit_imageUserPic);
         editName = findViewById(R.id.activity_profile_edit_editName);
+        editDesc = findViewById(R.id.activity_profile_edit_editDescription);
     }
 
     private void customizeShapeableImageView(){
@@ -111,25 +114,21 @@ public class ProfileEditActivity extends AppCompatActivity {
         editName.setText(mUser.getName());
 
         if (mUser.getUserPicUrl() != null){
-            Glide.with(this).load(mUser.getUserPicUrl()).into(imageUserPic);
+            Glide.with(this).load(mUser.getUserPicUrl()).placeholder(R.drawable.ic_person_24px).into(imageUserPic);
         }else {
-            Glide.with(this).load(R.drawable.ic_undraw_male_avatar).into(imageUserPic);
+            Glide.with(this).load(R.drawable.ic_person_24px).into(imageUserPic);
         }
 
 
 
     }
 
-    private void createMaterialDatePicker(){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-        MaterialDatePicker.Builder<Long> builder= MaterialDatePicker.Builder.datePicker();
+        getMenuInflater().inflate(R.menu.simple_save_menu,menu);
 
-        builder.setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR);
-
-        MaterialDatePicker<Long> materialDatePicker = builder.build();
-
-        materialDatePicker.show(getSupportFragmentManager(),null);
-
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

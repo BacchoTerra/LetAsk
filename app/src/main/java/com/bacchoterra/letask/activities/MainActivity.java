@@ -28,6 +28,7 @@ import com.bacchoterra.letask.helper.Base64Custom;
 import com.bacchoterra.letask.helper.MyHelper;
 import com.bacchoterra.letask.helper.SharedPrefsUtil;
 import com.bacchoterra.letask.model.Usuario;
+import com.bacchoterra.letask.model.UsuarioInformation;
 import com.blongho.country_data.World;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -137,19 +138,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void createToolbarButton(){
+    private void createToolbarButton() {
 
         btnRefreshUserInfo = new Button(this);
         btnRefreshUserInfo.setText(R.string.refresh);
         btnRefreshUserInfo.setVisibility(View.GONE);
-        btnRefreshUserInfo.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.shape_button_all_round_primary_color,null));
+        btnRefreshUserInfo.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_button_all_round_primary_color, null));
         btnRefreshUserInfo.setTextColor(getResources().getColor(R.color.white));
         btnRefreshUserInfo.setId(BTN_REFRESH_ID);
         btnRefreshUserInfo.setOnClickListener(this);
 
 
         toolbar.addView(btnRefreshUserInfo);
-
 
 
     }
@@ -159,48 +159,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnRefreshUserInfo.setVisibility(View.GONE);
 
 
-        mAuth.getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-
-                    firebaseUser = mAuth.getCurrentUser();
-                    usuario.setName(firebaseUser.getDisplayName());
-                    usuario.setEmail(firebaseUser.getEmail());
-                    txtUserName.setText(usuario.getName());
-                    handleUserCountry(usuario.getEmail());
-                    handleUserProfilePicture();
+        if (mAuth.getCurrentUser() != null) {
 
 
-                } else {
-                    txtUserName.setText(R.string.error_fetching_user_info);
-                    btnRefreshUserInfo.setVisibility(View.VISIBLE);
-                    Toast.makeText(MainActivity.this, R.string.error_fetching_user_information, Toast.LENGTH_SHORT).show();
-                    Snackbar.make(containerLayout,"sdasd",Snackbar.LENGTH_INDEFINITE).show();
+            mAuth.getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+
+                        firebaseUser = mAuth.getCurrentUser();
+                        usuario.setName(firebaseUser.getDisplayName());
+                        usuario.setEmail(firebaseUser.getEmail());
+                        txtUserName.setText(usuario.getName());
+                        handleUserCountry(usuario.getEmail());
+                        handleUserProfilePicture();
 
 
+                    } else {
+                        txtUserName.setText(R.string.error_fetching_user_info);
+                        btnRefreshUserInfo.setVisibility(View.VISIBLE);
+                        Toast.makeText(MainActivity.this, R.string.error_fetching_user_information, Toast.LENGTH_SHORT).show();
+                        Snackbar.make(containerLayout, "sdasd", Snackbar.LENGTH_INDEFINITE).show();
+
+
+                    }
                 }
-            }
-        });
+            });
+
+        }
 
     }
 
     private void handleUserProfilePicture() {
 
         if (firebaseUser.getPhotoUrl() != null) {
-            Glide.with(this).load(firebaseUser.getPhotoUrl()).into(imageUserPic);
+            Glide.with(this).load(firebaseUser.getPhotoUrl()).placeholder(R.drawable.ic_person_24px).into(imageUserPic);
             usuario.setUserPicUrl(firebaseUser.getPhotoUrl().toString());
         } else {
-            Random r = new Random();
-
-
-            int choice = r.nextInt(2);
-
-            if (choice == 0) {
-                Glide.with(this).load(R.drawable.ic_undraw_male_avatar).into(imageUserPic);
-            } else {
-                Glide.with(this).load(R.drawable.ic_undraw_female_avatar).into(imageUserPic);
-            }
+            Glide.with(this).load(R.drawable.ic_person_24px).into(imageUserPic);
         }
 
 
@@ -266,6 +262,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
 
+            if (UsuarioInformation.usuario != null){
+                UsuarioInformation.usuario = null;
+            }
+
             mAuth.signOut();
             startActivity(new Intent(this, AuthActivity.class));
             finish();
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             MyHelper.showSnackbarLong(R.string.no_internet_connection, drawerLayout);
         } else {
             MyHelper.showSnackbarLong(R.string.please_refresh_user_info, drawerLayout);
-            if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         }
@@ -360,16 +360,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.header_layout_txtUserName:
 
-                if (MyHelper.netConn(this) && firebaseUser != null){
+                if (MyHelper.netConn(this) && firebaseUser != null) {
 
-                    Intent intent = new Intent(this,ProfileEditActivity.class);
-                    intent.putExtra(KEY_FOR_USER_EMAIL,usuario.getEmail());
+                    Intent intent = new Intent(this, ProfileEditActivity.class);
+                    intent.putExtra(KEY_FOR_USER_EMAIL, usuario.getEmail());
                     startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
-                }else {
-                    MyHelper.showSnackbarLong(R.string.no_internet_connection,drawerLayout);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                } else {
+                    MyHelper.showSnackbarLong(R.string.no_internet_connection, drawerLayout);
                 }
-
 
 
         }
@@ -379,9 +378,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
 
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        }else {
+        } else {
             super.onBackPressed();
         }
 

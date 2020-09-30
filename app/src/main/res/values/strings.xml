@@ -71,5 +71,6 @@
     <string name="error_fetching_user_information">Error fetching user information,please click the refresh button</string>
     <string name="change_profile_photo">Change profile photo</string>
     <string name="edit">edit</string>
+    <string name="save">Save</string>
 
 </resources>

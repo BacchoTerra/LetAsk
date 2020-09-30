@@ -16,10 +16,10 @@ import com.google.firebase.storage.FirebaseStorage;
 
 public abstract class UsuarioInformation {
 
-    private static Usuario usuario;
+    public static Usuario usuario;
 
 
-    public static Usuario getUsuarioInformation(String email, final OnInformationFetchCompleteListener listener) {
+    public static void getUsuarioInformation(String email, final OnInformationFetchCompleteListener listener) {
 
         if (usuario == null) {
 
@@ -51,9 +51,6 @@ public abstract class UsuarioInformation {
 
             listener.onInformationSuccess(usuario,"from class");
         }
-
-        return usuario;
-
 
     }
 

@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -157,8 +158,9 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                         usuario.setName(acc.getDisplayName());
                         usuario.setEmail(acc.getEmail());
                         usuario.setId(Base64Custom.toBase64(acc.getEmail()));
-                        assert acc.getPhotoUrl() != null;
-                        usuario.setUserPicUrl(acc.getPhotoUrl().toString());
+                        if (acc.getPhotoUrl() != null){
+                            usuario.setUserPicUrl(resizeGoogleProfilePic(acc.getPhotoUrl().toString()));
+                        }
 
                         Intent intent = new Intent(AuthActivity.this, GoogleRegistrationActivity.class);
 
@@ -178,6 +180,14 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         MyHelper.dismissProgressDialog();
 
 
+    }
+
+    private String resizeGoogleProfilePic(String url){
+
+        String oldSize = "s96-c";
+        String newSize = "s400-c";
+
+        return url.replace(oldSize,newSize);
     }
 
 
