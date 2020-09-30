@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnRefreshUserInfo;
     public static final int BTN_REFRESH_ID = 45;
     private Usuario usuario = new Usuario();
-    public static final String KEY_FOR_USER_VALUES = "user_value_key";
+    public static final String KEY_FOR_USER_EMAIL = "user_email_key";
 
 
     @Override
@@ -166,8 +166,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     firebaseUser = mAuth.getCurrentUser();
                     usuario.setName(firebaseUser.getDisplayName());
+                    usuario.setEmail(firebaseUser.getEmail());
                     txtUserName.setText(usuario.getName());
-                    handleUserCountry(firebaseUser.getEmail());
+                    handleUserCountry(usuario.getEmail());
                     handleUserProfilePicture();
 
 
@@ -358,10 +359,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.header_layout_txtUserName:
-                Intent intent = new Intent(this,ProfileEditActivity.class);
-                intent.putExtra(KEY_FOR_USER_VALUES,usuario);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+
+                if (MyHelper.netConn(this) && firebaseUser != null){
+
+                    Intent intent = new Intent(this,ProfileEditActivity.class);
+                    intent.putExtra(KEY_FOR_USER_EMAIL,usuario.getEmail());
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+                }else {
+                    MyHelper.showSnackbarLong(R.string.no_internet_connection,drawerLayout);
+                }
 
 
 

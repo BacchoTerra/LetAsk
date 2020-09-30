@@ -69,5 +69,7 @@
     <string name="please_refresh_user_info">Please, refresh your information</string>
     <string name="refresh">Refresh</string>
     <string name="error_fetching_user_information">Error fetching user information,please click the refresh button</string>
+    <string name="change_profile_photo">Change profile photo</string>
+    <string name="edit">edit</string>
 
 </resources>
