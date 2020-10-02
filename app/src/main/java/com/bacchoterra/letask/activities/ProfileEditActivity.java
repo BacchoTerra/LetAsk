@@ -1,24 +1,22 @@
 package com.bacchoterra.letask.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
-import android.widget.ImageView;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
+import com.bacchoterra.letask.helper.MyHelper;
+import com.bacchoterra.letask.helper.UsuarioFirebase;
 import com.bacchoterra.letask.model.Usuario;
-import com.bacchoterra.letask.model.UsuarioInformation;
+import com.bacchoterra.letask.firebase.UsuarioInformation;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.CornerFamily;
-import com.google.android.material.shape.CornerTreatment;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -32,7 +30,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
 
     //Model
-    private Usuario usuario;
+    private Usuario currentUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,23 +57,20 @@ public class ProfileEditActivity extends AppCompatActivity {
         editDesc = findViewById(R.id.activity_profile_edit_editDescription);
     }
 
-    private void customizeShapeableImageView(){
 
-        ShapeAppearanceModel.Builder builder = imageUserPic.getShapeAppearanceModel().toBuilder();
-
-        builder.setAllCorners(CornerFamily.ROUNDED,30);
-
-        imageUserPic.setShapeAppearanceModel(builder.build());
-
-    }
-
-    private void getBundle (){
+    /**
+     * Email must come from intent, avoiding creating another FirebaseUser..
+     * The email will be used to get user information from database
+     *
+     * @see ProfileEditActivity#fetchUserInformation();
+     */
+    private void getBundle() {
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
+        if (bundle != null) {
             String email = bundle.getString(MainActivity.KEY_FOR_USER_EMAIL);
-            usuario = new Usuario();
-            usuario.setEmail(email);
+            currentUsuario = new Usuario();
+            currentUsuario.setEmail(email);
         }
 
 
@@ -83,20 +78,33 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     private void initToolbar() {
 
-        toolbar.setTitle(null);
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
+        getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
     }
 
-    private void fetchUserInformation(){
+    private void customizeShapeableImageView() {
 
-        UsuarioInformation.getUsuarioInformation(usuario.getEmail(), new UsuarioInformation.OnInformationFetchCompleteListener() {
+        ShapeAppearanceModel.Builder builder = imageUserPic.getShapeAppearanceModel().toBuilder();
+
+        builder.setAllCorners(CornerFamily.ROUNDED, 30);
+
+        imageUserPic.setShapeAppearanceModel(builder.build());
+
+
+    }
+
+    private void fetchUserInformation() {
+
+        UsuarioInformation.getUsuarioInformation(currentUsuario.getEmail(), new UsuarioInformation.OnInformationFetchCompleteListener() {
             @Override
             public void onInformationSuccess(Usuario information, String text) {
-                usuario = information;
-                handleUserInformation(usuario);
+                currentUsuario = information;
+                Toast.makeText(ProfileEditActivity.this, currentUsuario.getUserPicUrl(), Toast.LENGTH_SHORT).show();
+                handleUserInformation(currentUsuario);
                 Toast.makeText(ProfileEditActivity.this, text, Toast.LENGTH_SHORT).show();
             }
 
@@ -109,43 +117,107 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     }
 
-    private void handleUserInformation(Usuario mUser){
+    private void handleUserInformation(Usuario mUser) {
 
         editName.setText(mUser.getName());
 
-        if (mUser.getUserPicUrl() != null){
+        if (currentUsuario.getUserDescription() != null) {
+            editDesc.setText(currentUsuario.getUserDescription());
+        }
+
+        if (mUser.getUserPicUrl() != null) {
             Glide.with(this).load(mUser.getUserPicUrl()).placeholder(R.drawable.ic_person_24px).into(imageUserPic);
-        }else {
+        } else {
             Glide.with(this).load(R.drawable.ic_person_24px).into(imageUserPic);
         }
 
 
+    }
 
+    private void updateUser() {
+
+
+        if (MyHelper.netConn(this)) {
+
+            String name = editName.getText().toString();
+            String desc = editDesc.getText().toString();
+
+            if (name.length() >= 5 && isNameOnlyLetters(name)) {
+                currentUsuario.setName(name);
+                currentUsuario.setUserDescription(desc);
+
+                UsuarioInformation.updateUsuario(currentUsuario, new UsuarioInformation.OnInformationUpdated() {
+                    @Override
+                    public void onUpdate(Usuario updatedUsuario) {
+                        Toast.makeText(ProfileEditActivity.this, "nice", Toast.LENGTH_SHORT).show();
+                        UsuarioFirebase.updateUserName(updatedUsuario.getName());
+                        MainActivity.shouldRefreshUserInfo = true;
+                    }
+
+                    @Override
+                    public void onErrorUpdating(String error) {
+                        Toast.makeText(ProfileEditActivity.this, error, Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+            } else if (name.length() <5){
+
+                MyHelper.showSnackbarLong(R.string.invalid_user_name, toolbar);
+            }else {
+                MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters, toolbar);
+            }
+        } else {
+            MyHelper.showSnackbarLong(R.string.no_internet_connection, toolbar);
+        }
+
+    }
+
+
+    private boolean isNameOnlyLetters(String name) {
+
+        char[] letters = name.toCharArray();
+
+        for (char c : letters) {
+            if (!Character.isLetter(c) && c != ' ') {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.simple_save_menu,menu);
+        getMenuInflater().inflate(R.menu.simple_save_menu, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onNavigateUp() {
-        finish();
-        return true;
-    }
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
+       switch (item.getItemId()){
+
+
+           case R.id.simple_save_menu_save:
+
+               updateUser();
+               break;
+
+           case android.R.id.home:
+               finish();
+
+       }
+
         return true;
     }
 
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
     }
 }

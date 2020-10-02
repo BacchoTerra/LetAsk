@@ -6,13 +6,26 @@ import java.io.Serializable;
 
 public class Usuario implements Serializable {
 
+
+
     private String name;
     private String passWord;
     private String id;
     private String email;
     private String country;
     private String userPicUrl;
+    private String userDescription;
     private Long birthDate;
+
+
+
+    public String getUserDescription() {
+        return userDescription;
+    }
+
+    public void setUserDescription(String userDescription) {
+        this.userDescription = userDescription;
+    }
 
     public String getUserPicUrl() {
         return userPicUrl;

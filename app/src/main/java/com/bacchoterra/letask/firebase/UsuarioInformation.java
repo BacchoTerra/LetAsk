@@ -1,6 +1,7 @@
-package com.bacchoterra.letask.model;
+package com.bacchoterra.letask.firebase;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -8,11 +9,19 @@ import androidx.annotation.NonNull;
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.config.FirebaseConfig;
 import com.bacchoterra.letask.helper.Base64Custom;
+import com.bacchoterra.letask.helper.MyHelper;
+import com.bacchoterra.letask.model.Usuario;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class UsuarioInformation {
 
@@ -54,6 +63,46 @@ public abstract class UsuarioInformation {
 
     }
 
+    public static void updateUsuario(final Usuario updatedUsuario, final OnInformationUpdated listener){
+
+
+        DatabaseReference mRef = FirebaseConfig.getFBDatabase();
+
+        Map<String,Object> map = new HashMap<>();
+
+        map.put("name",updatedUsuario.getName());
+        map.put("userDescription",updatedUsuario.getUserDescription());
+        map.put("userPicUrl",updatedUsuario.getUserPicUrl());
+
+
+        mRef.child(FirebaseConfig.USERS_NOD)
+                .child(Base64Custom.toBase64(updatedUsuario.getEmail()))
+                .updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+
+                    listener.onUpdate(updatedUsuario);
+                    usuario = updatedUsuario;
+
+
+                }else {
+
+                    listener.onErrorUpdating(task.getException().getMessage());
+
+                }
+            }
+        });
+
+
+    }
+
+    public static void removeInstance() {
+
+        usuario = null;
+
+    }
+
 
     public interface OnInformationFetchCompleteListener {
 
@@ -61,6 +110,14 @@ public abstract class UsuarioInformation {
 
         void onInformationCancelled(String error);
 
+
+    }
+
+    public interface OnInformationUpdated{
+
+        void onUpdate(Usuario updatedUsurario);
+
+        void onErrorUpdating(String error);
 
     }
 

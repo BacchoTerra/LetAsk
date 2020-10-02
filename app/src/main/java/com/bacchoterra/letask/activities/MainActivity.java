@@ -28,7 +28,7 @@ import com.bacchoterra.letask.helper.Base64Custom;
 import com.bacchoterra.letask.helper.MyHelper;
 import com.bacchoterra.letask.helper.SharedPrefsUtil;
 import com.bacchoterra.letask.model.Usuario;
-import com.bacchoterra.letask.model.UsuarioInformation;
+import com.bacchoterra.letask.firebase.UsuarioInformation;
 import com.blongho.country_data.World;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -47,8 +47,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -81,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int BTN_REFRESH_ID = 45;
     private Usuario usuario = new Usuario();
     public static final String KEY_FOR_USER_EMAIL = "user_email_key";
+    public static boolean shouldRefreshUserInfo = false;
+
 
 
     @Override
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             if (UsuarioInformation.usuario != null){
-                UsuarioInformation.usuario = null;
+                UsuarioInformation.removeInstance();
             }
 
             mAuth.signOut();
@@ -343,6 +343,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (shouldRefreshUserInfo){
+            bindUserInfoInDrawer();
+            shouldRefreshUserInfo = false;
+        }
+
     }
 
     @Override
