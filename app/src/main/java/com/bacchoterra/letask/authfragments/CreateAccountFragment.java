@@ -263,9 +263,17 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                                             emailUsuario.setCountry(country);
                                             emailUsuario.setId(Base64Custom.toBase64(userEmail.toLowerCase()));
 
-                                            UsuarioFirebase.updateUserName(emailUsuario.getName());
+                                            UsuarioFirebase.updateUserName(emailUsuario.getName(), new UsuarioFirebase.OnUpdateSuccesListener() {
+                                                @Override
+                                                public void updateSuccess(String name) {
+                                                    saveUserInDatabase(emailUsuario);
+                                                }
 
-                                            saveUserInDatabase(emailUsuario);
+                                                @Override
+                                                public void updateFailure() {
+
+                                                }
+                                            });
 
                                         }
 

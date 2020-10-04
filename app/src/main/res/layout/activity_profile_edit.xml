@@ -26,13 +26,15 @@
         android:id="@+id/activity_profile_edit_imageUserPic"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        app:strokeWidth="2dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="24dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_profile_edit_appBarLayout"
-        tools:src="@drawable/bb" />
+        tools:src="@drawable/ic_baseline_account_circle_24"
+         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"

@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    //TODO: Melhorar performance deste metodo, ja que esta sendo chamado para atualizar o valor do FirebaseUser quando ha alteraçao na ProfileEditActivity.
     private void bindUserInfoInDrawer() {
 
         btnRefreshUserInfo.setVisibility(View.GONE);

@@ -139,6 +139,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
         if (MyHelper.netConn(this)) {
 
+            assert editName.getText() != null && editDesc.getText() != null;
             String name = editName.getText().toString();
             String desc = editDesc.getText().toString();
 
@@ -146,12 +147,22 @@ public class ProfileEditActivity extends AppCompatActivity {
                 currentUsuario.setName(name);
                 currentUsuario.setUserDescription(desc);
 
-                UsuarioInformation.updateUsuario(currentUsuario, new UsuarioInformation.OnInformationUpdated() {
+
+                UsuarioInformation.updateUsuarioOnDatabase(currentUsuario, new UsuarioInformation.OnInformationUpdated() {
                     @Override
                     public void onUpdate(Usuario updatedUsuario) {
-                        Toast.makeText(ProfileEditActivity.this, "nice", Toast.LENGTH_SHORT).show();
-                        UsuarioFirebase.updateUserName(updatedUsuario.getName());
-                        MainActivity.shouldRefreshUserInfo = true;
+                        UsuarioFirebase.updateUserName(updatedUsuario.getName(), new UsuarioFirebase.OnUpdateSuccesListener() {
+                            @Override
+                            public void updateSuccess(String name) {
+                                MainActivity.shouldRefreshUserInfo = true;
+                                finish();
+                            }
+
+                            @Override
+                            public void updateFailure() {
+
+                            }
+                        });
                     }
 
                     @Override
@@ -161,10 +172,10 @@ public class ProfileEditActivity extends AppCompatActivity {
                 });
 
 
-            } else if (name.length() <5){
+            } else if (name.length() < 5) {
 
                 MyHelper.showSnackbarLong(R.string.invalid_user_name, toolbar);
-            }else {
+            } else {
                 MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters, toolbar);
             }
         } else {
@@ -198,18 +209,18 @@ public class ProfileEditActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-       switch (item.getItemId()){
+        switch (item.getItemId()) {
 
 
-           case R.id.simple_save_menu_save:
+            case R.id.simple_save_menu_save:
 
-               updateUser();
-               break;
+                updateUser();
+                break;
 
-           case android.R.id.home:
-               finish();
+            case android.R.id.home:
+                finish();
 
-       }
+        }
 
         return true;
     }

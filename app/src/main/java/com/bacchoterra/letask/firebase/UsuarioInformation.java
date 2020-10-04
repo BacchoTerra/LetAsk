@@ -63,7 +63,8 @@ public abstract class UsuarioInformation {
 
     }
 
-    public static void updateUsuario(final Usuario updatedUsuario, final OnInformationUpdated listener){
+    //TODO: Melhorar este metodo para verificar se houve alteraçao de valores
+    public static void updateUsuarioOnDatabase(final Usuario updatedUsuario, final OnInformationUpdated listener){
 
 
         DatabaseReference mRef = FirebaseConfig.getFBDatabase();

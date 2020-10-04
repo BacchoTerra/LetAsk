@@ -72,5 +72,6 @@
     <string name="change_profile_photo">Change profile photo</string>
     <string name="edit">edit</string>
     <string name="save">Save</string>
+    <string name="success">Success!</string>
 
 </resources>
