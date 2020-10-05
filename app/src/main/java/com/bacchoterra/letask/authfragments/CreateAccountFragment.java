@@ -3,9 +3,6 @@ package com.bacchoterra.letask.authfragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,8 +11,6 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.fragment.app.Fragment;
 
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +27,7 @@ import com.bacchoterra.letask.config.FirebaseConfig;
 import com.bacchoterra.letask.helper.Base64Custom;
 import com.bacchoterra.letask.helper.MyHelper;
 import com.bacchoterra.letask.helper.SharedPrefsUtil;
-import com.bacchoterra.letask.helper.UsuarioFirebase;
+import com.bacchoterra.letask.firebase.UsuarioFirebase;
 import com.bacchoterra.letask.model.Usuario;
 import com.blongho.country_data.Country;
 import com.blongho.country_data.World;

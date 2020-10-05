@@ -1,10 +1,11 @@
-package com.bacchoterra.letask.helper;
+package com.bacchoterra.letask.firebase;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.bacchoterra.letask.config.FirebaseConfig;
+import com.bacchoterra.letask.helper.Base64Custom;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

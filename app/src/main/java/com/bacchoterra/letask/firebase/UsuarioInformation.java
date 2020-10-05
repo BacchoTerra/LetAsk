@@ -1,15 +1,9 @@
 package com.bacchoterra.letask.firebase;
 
-import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 
-import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.config.FirebaseConfig;
 import com.bacchoterra.letask.helper.Base64Custom;
-import com.bacchoterra.letask.helper.MyHelper;
 import com.bacchoterra.letask.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -17,9 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,7 +56,7 @@ public abstract class UsuarioInformation {
     }
 
     //TODO: Melhorar este metodo para verificar se houve alteraçao de valores
-    public static void updateUsuarioOnDatabase(final Usuario updatedUsuario, final OnInformationUpdated listener){
+    public static void updateUsuarioOnDatabase(final Usuario updatedUsuario, final OnInformationUpdatedCompleteListener listener){
 
 
         DatabaseReference mRef = FirebaseConfig.getFBDatabase();
@@ -114,7 +106,7 @@ public abstract class UsuarioInformation {
 
     }
 
-    public interface OnInformationUpdated{
+    public interface OnInformationUpdatedCompleteListener {
 
         void onUpdate(Usuario updatedUsurario);
 

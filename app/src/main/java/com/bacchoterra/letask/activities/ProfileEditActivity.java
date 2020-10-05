@@ -3,15 +3,19 @@ package com.bacchoterra.letask.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
 import com.bacchoterra.letask.helper.MyHelper;
-import com.bacchoterra.letask.helper.UsuarioFirebase;
+import com.bacchoterra.letask.firebase.UsuarioFirebase;
 import com.bacchoterra.letask.model.Usuario;
 import com.bacchoterra.letask.firebase.UsuarioInformation;
 import com.bumptech.glide.Glide;
@@ -31,6 +35,9 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     //Model
     private Usuario currentUsuario;
+
+    //Toolbar menu
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +110,6 @@ public class ProfileEditActivity extends AppCompatActivity {
             @Override
             public void onInformationSuccess(Usuario information, String text) {
                 currentUsuario = information;
-                Toast.makeText(ProfileEditActivity.this, currentUsuario.getUserPicUrl(), Toast.LENGTH_SHORT).show();
                 handleUserInformation(currentUsuario);
                 Toast.makeText(ProfileEditActivity.this, text, Toast.LENGTH_SHORT).show();
             }
@@ -136,6 +142,11 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     private void updateUser() {
 
+        final ProgressBar pb = createToolbarProgressBar();
+        final MenuItem item = mMenu.findItem(R.id.simple_save_menu_save);
+        item.setVisible(false);
+
+
 
         if (MyHelper.netConn(this)) {
 
@@ -148,10 +159,12 @@ public class ProfileEditActivity extends AppCompatActivity {
                 currentUsuario.setUserDescription(desc);
 
 
-                UsuarioInformation.updateUsuarioOnDatabase(currentUsuario, new UsuarioInformation.OnInformationUpdated() {
+                UsuarioInformation.updateUsuarioOnDatabase(currentUsuario, new UsuarioInformation.OnInformationUpdatedCompleteListener() {
                     @Override
                     public void onUpdate(Usuario updatedUsuario) {
                         UsuarioFirebase.updateUserName(updatedUsuario.getName(), new UsuarioFirebase.OnUpdateSuccesListener() {
+
+
                             @Override
                             public void updateSuccess(String name) {
                                 MainActivity.shouldRefreshUserInfo = true;
@@ -168,6 +181,8 @@ public class ProfileEditActivity extends AppCompatActivity {
                     @Override
                     public void onErrorUpdating(String error) {
                         Toast.makeText(ProfileEditActivity.this, error, Toast.LENGTH_LONG).show();
+                        pb.setVisibility(View.GONE);
+                        item.setVisible(true);
                     }
                 });
 
@@ -175,12 +190,33 @@ public class ProfileEditActivity extends AppCompatActivity {
             } else if (name.length() < 5) {
 
                 MyHelper.showSnackbarLong(R.string.invalid_user_name, toolbar);
+                pb.setVisibility(View.GONE);
+                item.setVisible(true);
             } else {
                 MyHelper.showSnackbarLong(R.string.name_can_only_contain_letters, toolbar);
+                pb.setVisibility(View.GONE);
+                item.setVisible(true);
             }
         } else {
             MyHelper.showSnackbarLong(R.string.no_internet_connection, toolbar);
+            pb.setVisibility(View.GONE);
+            item.setVisible(true);
         }
+
+    }
+
+    private ProgressBar createToolbarProgressBar() {
+
+        ProgressBar pb = new ProgressBar(this);
+        Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT, GravityCompat.END);
+
+
+
+        pb.setLayoutParams(params);
+
+        toolbar.addView(pb);
+
+        return pb;
 
     }
 
@@ -201,6 +237,7 @@ public class ProfileEditActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+        this.mMenu = menu;
         getMenuInflater().inflate(R.menu.simple_save_menu, menu);
 
         return super.onCreateOptionsMenu(menu);

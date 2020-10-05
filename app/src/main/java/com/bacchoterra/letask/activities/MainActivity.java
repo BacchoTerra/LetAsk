@@ -154,13 +154,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    //TODO: Melhorar performance deste metodo, ja que esta sendo chamado para atualizar o valor do FirebaseUser quando ha alteraçao na ProfileEditActivity.
+    //TODO: Nada mais é salvo como FirebaseUser, agr tudo é salvo direto no database,esse metodo tem que verifivar se a clase UsuarioFirebase tem a instancia ou nao, e handle it
     private void bindUserInfoInDrawer() {
 
         btnRefreshUserInfo.setVisibility(View.GONE);
 
 
+
+
         if (mAuth.getCurrentUser() != null) {
+
+
 
 
             mAuth.getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -187,9 +191,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
 
-        }
+         }
 
-    }
+        }
 
     private void handleUserProfilePicture() {
 
@@ -353,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (shouldRefreshUserInfo){
             bindUserInfoInDrawer();
             shouldRefreshUserInfo = false;
+            Toast.makeText(this, "Information Updated", Toast.LENGTH_SHORT).show();
         }
 
     }
