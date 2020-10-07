@@ -170,20 +170,9 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
                 UsuarioInformation.updateUsuarioOnDatabase(currentUsuario, new UsuarioInformation.OnInformationUpdatedCompleteListener() {
                     @Override
                     public void onUpdate(Usuario updatedUsuario) {
-                        UsuarioFirebase.updateUserName(updatedUsuario.getName(), new UsuarioFirebase.OnUpdateSuccesListener() {
-
-
-                            @Override
-                            public void updateSuccess(String name) {
-                                MainActivity.shouldRefreshUserInfo = true;
-                                finish();
-                            }
-
-                            @Override
-                            public void updateFailure() {
-
-                            }
-                        });
+                        UsuarioFirebase.updateUserName(updatedUsuario.getName());
+                        MainActivity.shouldRefreshUserInfo = true;
+                        finish();
                     }
 
                     @Override
