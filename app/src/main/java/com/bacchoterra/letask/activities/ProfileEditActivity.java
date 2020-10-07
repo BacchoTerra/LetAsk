@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 
+import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,9 +26,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.ShapeAppearanceModel;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class ProfileEditActivity extends AppCompatActivity implements View.OnClickListener,ProfileEditBottomSheetDialog.OnFabChoiceListener{
+import java.util.List;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class ProfileEditActivity extends AppCompatActivity implements View.OnClickListener,ProfileEditBottomSheetDialog.OnFabChoiceListener,EasyPermissions.PermissionCallbacks{
 
     //Layout components
     private Toolbar toolbar;
@@ -40,9 +50,20 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
     //Toolbar menu
     private Menu mMenu;
+    private int clickLock = 0; //Lock the menu click before information is fetched;
 
     //BottomSheet
-    ProfileEditBottomSheetDialog profileEditBottomSheetDialog;
+    private ProfileEditBottomSheetDialog profileEditBottomSheetDialog;
+
+    //Extras
+    private Snackbar loadingSnackBar;
+
+    //Permissions and intents
+    private static final int CAMERA_PERMISSION = 100;
+    private static final int CAMERA_SELECTION = 101;
+
+    private static final int STORAGE_PERMISSION = 200;
+    private static final int GALLERY_SELECTION = 201;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +116,6 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
-        getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -114,17 +134,23 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
     private void fetchUserInformation() {
 
+        loadingSnackBar = Snackbar.make(toolbar,"Loading information..",Snackbar.LENGTH_INDEFINITE);
+        loadingSnackBar.show();
+
         UsuarioInformation.getUsuarioInformation(currentUsuario.getEmail(), new UsuarioInformation.OnInformationFetchCompleteListener() {
             @Override
             public void onInformationSuccess(Usuario information, String text) {
                 currentUsuario = information;
                 handleUserInformation(currentUsuario);
                 Toast.makeText(ProfileEditActivity.this, text, Toast.LENGTH_SHORT).show();
+                loadingSnackBar.dismiss();
+                clickLock = 1;
             }
 
             @Override
             public void onInformationCancelled(String error) {
                 Toast.makeText(ProfileEditActivity.this, error, Toast.LENGTH_SHORT).show();
+                loadingSnackBar.dismiss();
             }
         });
 
@@ -248,7 +274,10 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.simple_save_menu_save:
 
-                updateUser();
+                if (clickLock != 0){
+                    updateUser();
+                }
+
                 break;
 
             case android.R.id.home:
@@ -288,11 +317,11 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
 
             case ProfileEditBottomSheetDialog.FAB_CAMERA:
-                Toast.makeText(this, "Camera", Toast.LENGTH_SHORT).show();
+                cameraPermission();
                 break;
 
             case ProfileEditBottomSheetDialog.FAB_GALLERY:
-                Toast.makeText(this, "Gallery", Toast.LENGTH_SHORT).show();
+                externalStoragePermission();
                 break;
 
             case ProfileEditBottomSheetDialog.FAB_REMOVE_PIC:
@@ -301,6 +330,67 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
         }
 
+
+    }
+
+    //Permissions methods----------------------------------------------------------------------------------------------
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        EasyPermissions.onRequestPermissionsResult( requestCode,permissions,grantResults,this);
+
+    }
+
+    @AfterPermissionGranted(CAMERA_PERMISSION)
+    private void cameraPermission(){
+
+        String [] perm = {Manifest.permission.CAMERA};
+
+        if (EasyPermissions.hasPermissions(this,perm)){
+
+            Intent camIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (camIntent.resolveActivity(getPackageManager()) != null){
+                startActivityForResult(camIntent,CAMERA_SELECTION);
+            }
+
+
+        }else {
+            EasyPermissions.requestPermissions(this,getString(R.string.camera_permission),CAMERA_PERMISSION,perm);
+        }
+
+    }
+
+    @AfterPermissionGranted(STORAGE_PERMISSION)
+    private void externalStoragePermission(){
+
+        String [] perm = {Manifest.permission.READ_EXTERNAL_STORAGE};
+
+        if (EasyPermissions.hasPermissions(this,perm)){
+
+            Intent galIntent = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            if (galIntent.resolveActivity(getPackageManager()) != null){
+                startActivityForResult(galIntent,GALLERY_SELECTION);
+            }
+
+        }else {
+            EasyPermissions.requestPermissions(this,getString(R.string.external_storage_permission),GALLERY_SELECTION,perm);
+        }
+
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+
+        if (EasyPermissions.somePermissionPermanentlyDenied(this,perms)){
+            new AppSettingsDialog.Builder(this).build().show();
+        }
 
     }
 }

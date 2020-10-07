@@ -15,6 +15,8 @@
 
 
         <androidx.appcompat.widget.Toolbar
+            app:titleTextColor="@color/textPrimaryColor"
+            app:title="@string/edit_profile"
             android:id="@+id/activity_profile_edit_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
