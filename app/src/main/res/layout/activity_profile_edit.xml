@@ -33,11 +33,11 @@
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_profile_edit_appBarLayout"
-        tools:src="@drawable/ic_baseline_account_circle_24"
+        android:src="@drawable/ic_person_24px"
          />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/activity_profile_edit_fabChoosePic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
@@ -65,7 +65,7 @@
         app:boxBackgroundColor="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/floatingActionButton">
+        app:layout_constraintTop_toBottomOf="@+id/activity_profile_edit_fabChoosePic">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/activity_profile_edit_editName"

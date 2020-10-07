@@ -9,26 +9,28 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bacchoterra.letask.R;
+import com.bacchoterra.letask.fragments.ProfileEditBottomSheetDialog;
 import com.bacchoterra.letask.helper.MyHelper;
 import com.bacchoterra.letask.firebase.UsuarioFirebase;
 import com.bacchoterra.letask.model.Usuario;
 import com.bacchoterra.letask.firebase.UsuarioInformation;
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class ProfileEditActivity extends AppCompatActivity {
+public class ProfileEditActivity extends AppCompatActivity implements View.OnClickListener,ProfileEditBottomSheetDialog.OnFabChoiceListener{
 
     //Layout components
     private Toolbar toolbar;
     private ShapeableImageView imageUserPic;
+    private FloatingActionButton fabChoosePic;
     private TextInputEditText editName;
     private TextInputEditText editDesc;
 
@@ -38,6 +40,9 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     //Toolbar menu
     private Menu mMenu;
+
+    //BottomSheet
+    ProfileEditBottomSheetDialog profileEditBottomSheetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +65,11 @@ public class ProfileEditActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.activity_profile_edit_toolbar);
         imageUserPic = findViewById(R.id.activity_profile_edit_imageUserPic);
+        fabChoosePic = findViewById(R.id.activity_profile_edit_fabChoosePic);
         editName = findViewById(R.id.activity_profile_edit_editName);
         editDesc = findViewById(R.id.activity_profile_edit_editDescription);
+
+        fabChoosePic.setOnClickListener(this);
     }
 
 
@@ -127,8 +135,8 @@ public class ProfileEditActivity extends AppCompatActivity {
 
         editName.setText(mUser.getName());
 
-        if (currentUsuario.getUserDescription() != null) {
-            editDesc.setText(currentUsuario.getUserDescription());
+        if (mUser.getUserDescription() != null) {
+            editDesc.setText(mUser.getUserDescription());
         }
 
         if (mUser.getUserPicUrl() != null) {
@@ -266,6 +274,44 @@ public class ProfileEditActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+    }
+
+
+    @Override
+    public void onClick(View view) {
+
+        if (view == fabChoosePic){
+
+            if (profileEditBottomSheetDialog == null){
+                profileEditBottomSheetDialog = new ProfileEditBottomSheetDialog();
+            }
+            profileEditBottomSheetDialog.show(getSupportFragmentManager(),null);
+
+        }
+
+    }
+
+    @Override
+    public void onFabChose(int choice) {
+
+        switch (choice){
+
+
+            case ProfileEditBottomSheetDialog.FAB_CAMERA:
+                Toast.makeText(this, "Camera", Toast.LENGTH_SHORT).show();
+                break;
+
+            case ProfileEditBottomSheetDialog.FAB_GALLERY:
+                Toast.makeText(this, "Gallery", Toast.LENGTH_SHORT).show();
+                break;
+
+            case ProfileEditBottomSheetDialog.FAB_REMOVE_PIC:
+                Toast.makeText(this, "Remove pic", Toast.LENGTH_SHORT).show();
+                break;
+
+        }
+
 
     }
 }
