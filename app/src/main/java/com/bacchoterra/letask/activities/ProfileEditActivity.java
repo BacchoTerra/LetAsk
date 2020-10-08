@@ -1,12 +1,15 @@
 package com.bacchoterra.letask.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -196,9 +199,20 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
                 UsuarioInformation.updateUsuarioOnDatabase(currentUsuario, new UsuarioInformation.OnInformationUpdatedCompleteListener() {
                     @Override
                     public void onUpdate(Usuario updatedUsuario) {
-                        UsuarioFirebase.updateUserName(updatedUsuario.getName());
-                        MainActivity.shouldRefreshUserInfo = true;
-                        finish();
+                        UsuarioFirebase.updateUserName(updatedUsuario.getName(), new UsuarioFirebase.OnNameUpdateListener() {
+                            @Override
+                            public void onUpdateSuccess() {
+                                MainActivity.shouldRefreshUserInfo = true;
+                                finish();
+                            }
+
+                            @Override
+                            public void onUpdateFailure() {
+                                pb.setVisibility(View.GONE);
+                                item.setVisible(true);
+                                Toast.makeText(ProfileEditActivity.this, R.string.error_updating_name, Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
 
                     @Override
@@ -330,6 +344,41 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
         }
 
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK){
+
+            Bitmap image = null;
+
+            try {
+                switch (requestCode){
+
+                    case CAMERA_SELECTION:
+
+                        image = (Bitmap) data.getExtras().get("data");
+
+                        break;
+
+                    case GALLERY_SELECTION:
+                        Uri imageLocal = data.getData();
+                        image = MediaStore.Images.Media.getBitmap(getContentResolver(),imageLocal);
+                        break;
+
+                }
+
+                if (image != null){
+                    imageUserPic.setImageBitmap(image);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
 
     }
 

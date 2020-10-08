@@ -36,7 +36,7 @@ public class UsuarioFirebase {
 
     }
 
-    public static void updateUserName(final String name){
+    public static void updateUserName(final String name, final OnNameUpdateListener listener){
 
        try {
 
@@ -50,9 +50,11 @@ public class UsuarioFirebase {
 
                    if (!task.isSuccessful()){
                        Log.d("TAG: name update", "onComplete: Failure updating name");
+                       listener.onUpdateFailure();
 
                    }else {
                        Log.d("TAG: name update", "onComplete: success updating name");
+                       listener.onUpdateSuccess();
 
                    }
 
@@ -64,6 +66,14 @@ public class UsuarioFirebase {
            e.printStackTrace();
        }
 
+
+    }
+
+    public interface OnNameUpdateListener {
+
+        void onUpdateSuccess();
+
+        void onUpdateFailure();
 
     }
 
