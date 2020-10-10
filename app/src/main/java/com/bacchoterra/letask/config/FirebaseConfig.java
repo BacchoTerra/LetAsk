@@ -10,6 +10,7 @@ public class FirebaseConfig {
 
     public static final String USERS_NOD = "Users";
     public static final String COUNTRY_NOD = "country";
+    public static final String PIC_NOD = "userPicUrl";
 
     //Firebase components
     private static FirebaseAuth mAuth;

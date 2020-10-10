@@ -38,7 +38,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class ProfileEditActivity extends AppCompatActivity implements View.OnClickListener,ProfileEditBottomSheetDialog.OnFabChoiceListener,EasyPermissions.PermissionCallbacks{
+public class ProfileEditActivity extends AppCompatActivity implements View.OnClickListener, ProfileEditBottomSheetDialog.OnFabChoiceListener, EasyPermissions.PermissionCallbacks {
 
     //Layout components
     private Toolbar toolbar;
@@ -137,7 +137,7 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
     private void fetchUserInformation() {
 
-        loadingSnackBar = Snackbar.make(toolbar,"Loading information..",Snackbar.LENGTH_INDEFINITE);
+        loadingSnackBar = Snackbar.make(toolbar, "Loading information..", Snackbar.LENGTH_INDEFINITE);
         loadingSnackBar.show();
 
         UsuarioInformation.getUsuarioInformation(currentUsuario.getEmail(), new UsuarioInformation.OnInformationFetchCompleteListener() {
@@ -182,7 +182,6 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
         final ProgressBar pb = createToolbarProgressBar();
         final MenuItem item = mMenu.findItem(R.id.simple_save_menu_save);
         item.setVisible(false);
-
 
 
         if (MyHelper.netConn(this)) {
@@ -248,7 +247,6 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
         Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT, GravityCompat.END);
 
 
-
         pb.setLayoutParams(params);
 
         toolbar.addView(pb);
@@ -288,7 +286,7 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.simple_save_menu_save:
 
-                if (clickLock != 0){
+                if (clickLock != 0) {
                     updateUser();
                 }
 
@@ -313,12 +311,12 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View view) {
 
-        if (view == fabChoosePic){
+        if (view == fabChoosePic) {
 
-            if (profileEditBottomSheetDialog == null){
+            if (profileEditBottomSheetDialog == null) {
                 profileEditBottomSheetDialog = new ProfileEditBottomSheetDialog();
             }
-            profileEditBottomSheetDialog.show(getSupportFragmentManager(),null);
+            profileEditBottomSheetDialog.show(getSupportFragmentManager(), null);
 
         }
 
@@ -327,7 +325,7 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onFabChose(int choice) {
 
-        switch (choice){
+        switch (choice) {
 
 
             case ProfileEditBottomSheetDialog.FAB_CAMERA:
@@ -339,7 +337,31 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
                 break;
 
             case ProfileEditBottomSheetDialog.FAB_REMOVE_PIC:
-                Toast.makeText(this, "Remove pic", Toast.LENGTH_SHORT).show();
+
+                if (currentUsuario.getUserPicUrl() != null) {
+
+
+                    MyHelper.showProgressDialog(this);
+                    UsuarioInformation.updateUserProfilePic(null, new UsuarioInformation.OnPictureUpdateListener() {
+                        @Override
+                        public void onUpdateSuccess() {
+                            MainActivity.shouldRefreshUserInfo = true;
+                            imageUserPic.setImageResource(R.drawable.ic_person_24px);
+                            MyHelper.showSnackbarLong(R.string.success, toolbar);
+                            MyHelper.dismissProgressDialog();
+
+                        }
+
+                        @Override
+                        public void onUpdateFailure() {
+                            Toast.makeText(ProfileEditActivity.this, getString(R.string.error), Toast.LENGTH_SHORT)
+                                    .show();
+                            MyHelper.dismissProgressDialog();
+                        }
+                    });
+                } else {
+                    MyHelper.showSnackbarLong(R.string.success, toolbar);
+                }
                 break;
 
         }
@@ -351,13 +373,13 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             MyHelper.showProgressDialog(this);
 
             Bitmap image = null;
 
             try {
-                switch (requestCode){
+                switch (requestCode) {
 
                     case CAMERA_SELECTION:
 
@@ -367,7 +389,7 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
                             public void onUpdateSuccess() {
                                 MainActivity.shouldRefreshUserInfo = true;
                                 MyHelper.dismissProgressDialog();
-                                MyHelper.showSnackbarLong(R.string.success,toolbar);
+                                MyHelper.showSnackbarLong(R.string.success, toolbar);
 
                             }
 
@@ -382,13 +404,13 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
                     case GALLERY_SELECTION:
                         Uri imageLocal = data.getData();
-                        image = MediaStore.Images.Media.getBitmap(getContentResolver(),imageLocal);
+                        image = MediaStore.Images.Media.getBitmap(getContentResolver(), imageLocal);
                         UsuarioInformation.updateUserProfilePic(image, new UsuarioInformation.OnPictureUpdateListener() {
                             @Override
                             public void onUpdateSuccess() {
                                 MainActivity.shouldRefreshUserInfo = true;
                                 MyHelper.dismissProgressDialog();
-                                MyHelper.showSnackbarLong(R.string.success,toolbar);
+                                MyHelper.showSnackbarLong(R.string.success, toolbar);
                             }
 
                             @Override
@@ -401,10 +423,10 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
                 }
 
-                if (image != null){
+                if (image != null) {
                     imageUserPic.setImageBitmap(image);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -418,43 +440,43 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        EasyPermissions.onRequestPermissionsResult( requestCode,permissions,grantResults,this);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
 
     }
 
     @AfterPermissionGranted(CAMERA_PERMISSION)
-    private void cameraPermission(){
+    private void cameraPermission() {
 
-        String [] perm = {Manifest.permission.CAMERA};
+        String[] perm = {Manifest.permission.CAMERA};
 
-        if (EasyPermissions.hasPermissions(this,perm)){
+        if (EasyPermissions.hasPermissions(this, perm)) {
 
             Intent camIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (camIntent.resolveActivity(getPackageManager()) != null){
-                startActivityForResult(camIntent,CAMERA_SELECTION);
+            if (camIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(camIntent, CAMERA_SELECTION);
             }
 
 
-        }else {
-            EasyPermissions.requestPermissions(this,getString(R.string.camera_permission),CAMERA_PERMISSION,perm);
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.camera_permission), CAMERA_PERMISSION, perm);
         }
 
     }
 
     @AfterPermissionGranted(STORAGE_PERMISSION)
-    private void externalStoragePermission(){
+    private void externalStoragePermission() {
 
-        String [] perm = {Manifest.permission.READ_EXTERNAL_STORAGE};
+        String[] perm = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
-        if (EasyPermissions.hasPermissions(this,perm)){
+        if (EasyPermissions.hasPermissions(this, perm)) {
 
-            Intent galIntent = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            if (galIntent.resolveActivity(getPackageManager()) != null){
-                startActivityForResult(galIntent,GALLERY_SELECTION);
+            Intent galIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            if (galIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(galIntent, GALLERY_SELECTION);
             }
 
-        }else {
-            EasyPermissions.requestPermissions(this,getString(R.string.external_storage_permission),GALLERY_SELECTION,perm);
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.external_storage_permission), GALLERY_SELECTION, perm);
         }
 
     }
@@ -467,7 +489,7 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
 
-        if (EasyPermissions.somePermissionPermanentlyDenied(this,perms)){
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             new AppSettingsDialog.Builder(this).build().show();
         }
 
