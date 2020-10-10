@@ -1,7 +1,11 @@
 package com.bacchoterra.letask.firebase;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
+import com.bacchoterra.letask.activities.MainActivity;
 import com.bacchoterra.letask.config.FirebaseConfig;
 import com.bacchoterra.letask.helper.Base64Custom;
 import com.bacchoterra.letask.model.Usuario;
@@ -11,7 +15,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,6 +97,66 @@ public abstract class UsuarioInformation {
 
     }
 
+    public static void updateUserProfilePic(Bitmap bitmap, final OnPictureUpdateListener listener){
+
+        StorageReference mStorage = FirebaseConfig.getFBStorage();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+        byte[] imageData = baos.toByteArray();
+
+        final StorageReference userStorage = mStorage.child("images")
+                .child("profile")
+                .child(Base64Custom.toBase64(usuario.getEmail()) + ".jpeg");
+
+        UploadTask uTask = userStorage.putBytes(imageData);
+
+        uTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()){
+
+                    Task<Uri> uri = task.getResult().getStorage().getDownloadUrl();
+                    while (!uri.isComplete());
+                    final Uri url = uri.getResult();
+                    UsuarioFirebase.updateUserProfilePic(url, new UsuarioFirebase.OnProfilePicUpdateListener() {
+                        @Override
+                        public void onUpdateSuccess() {
+                            DatabaseReference mRef = FirebaseConfig.getFBDatabase();
+                            mRef.child(FirebaseConfig.USERS_NOD)
+                                    .child(Base64Custom.toBase64(usuario.getEmail()))
+                                    .child("userPicUrl").setValue(url.toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()){
+                                        usuario.setUserPicUrl(url.toString());
+                                        listener.onUpdateSuccess();
+                                    }else {
+                                        userStorage.delete();
+                                        listener.onUpdateFailure();
+
+                                    }
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onUpdateFailure() {
+
+                        }
+                    });
+
+
+                }else {
+                    listener.onUpdateFailure();
+                }
+            }
+        });
+
+
+    }
+
     public static void removeInstance() {
 
         usuario = null;
@@ -111,6 +178,15 @@ public abstract class UsuarioInformation {
         void onUpdate(Usuario updatedUsurario);
 
         void onErrorUpdating(String error);
+
+    }
+
+    public interface OnPictureUpdateListener{
+
+
+        void onUpdateSuccess();
+
+        void onUpdateFailure();
 
     }
 

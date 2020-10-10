@@ -352,6 +352,7 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
         super.onActivityResult(requestCode, resultCode, data);
 
         if(resultCode == RESULT_OK){
+            MyHelper.showProgressDialog(this);
 
             Bitmap image = null;
 
@@ -361,12 +362,41 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
                     case CAMERA_SELECTION:
 
                         image = (Bitmap) data.getExtras().get("data");
+                        UsuarioInformation.updateUserProfilePic(image, new UsuarioInformation.OnPictureUpdateListener() {
+                            @Override
+                            public void onUpdateSuccess() {
+                                MainActivity.shouldRefreshUserInfo = true;
+                                MyHelper.dismissProgressDialog();
+                                MyHelper.showSnackbarLong(R.string.success,toolbar);
+
+                            }
+
+                            @Override
+                            public void onUpdateFailure() {
+                                Toast.makeText(ProfileEditActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+                                MyHelper.dismissProgressDialog();
+                            }
+                        });
 
                         break;
 
                     case GALLERY_SELECTION:
                         Uri imageLocal = data.getData();
                         image = MediaStore.Images.Media.getBitmap(getContentResolver(),imageLocal);
+                        UsuarioInformation.updateUserProfilePic(image, new UsuarioInformation.OnPictureUpdateListener() {
+                            @Override
+                            public void onUpdateSuccess() {
+                                MainActivity.shouldRefreshUserInfo = true;
+                                MyHelper.dismissProgressDialog();
+                                MyHelper.showSnackbarLong(R.string.success,toolbar);
+                            }
+
+                            @Override
+                            public void onUpdateFailure() {
+                                Toast.makeText(ProfileEditActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+                                MyHelper.dismissProgressDialog();
+                            }
+                        });
                         break;
 
                 }

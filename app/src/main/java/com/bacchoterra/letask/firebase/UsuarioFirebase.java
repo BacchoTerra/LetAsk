@@ -1,5 +1,6 @@
 package com.bacchoterra.letask.firebase;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -69,7 +70,42 @@ public class UsuarioFirebase {
 
     }
 
+    public static void updateUserProfilePic(Uri url, final OnProfilePicUpdateListener listener){
+
+
+        try{
+            FirebaseUser user = getCurrentUser();
+            UserProfileChangeRequest upcr = new UserProfileChangeRequest.Builder().setPhotoUri(url).build();
+            user.updateProfile(upcr).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+
+                        listener.onUpdateSuccess();
+
+
+                    }else {
+                        listener.onUpdateFailure();
+                    }
+                }
+            });
+
+        }catch (Exception e){
+            e.printStackTrace();
+            listener.onUpdateFailure();
+        }
+
+    }
+
     public interface OnNameUpdateListener {
+
+        void onUpdateSuccess();
+
+        void onUpdateFailure();
+
+    }
+
+    public interface OnProfilePicUpdateListener {
 
         void onUpdateSuccess();
 
