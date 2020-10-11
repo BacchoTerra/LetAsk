@@ -79,5 +79,7 @@
     <string name="camera_permission">Please accept the camera permission to use this function.</string>
     <string name="external_storage_permission">Please accept the external storage permission to use this function.</string>
     <string name="error_updating_name">An error has ocurred, please, try saving again</string>
+    <string name="guest_account">Guest account</string>
+    <string name="create_an_account_to_edit_your_profile">Create an account to edit your profile!</string>
 
 </resources>

@@ -37,7 +37,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -80,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Usuario usuario = new Usuario();
     public static final String KEY_FOR_USER_EMAIL = "user_email_key";
     public static boolean shouldRefreshUserInfo = false;
-
 
 
     @Override
@@ -154,46 +152,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    //TODO: Nada mais é salvo como FirebaseUser, agr tudo é salvo direto no database,esse metodo tem que verifivar se a clase UsuarioFirebase tem a instancia ou nao, e handle it
     private void bindUserInfoInDrawer() {
 
         btnRefreshUserInfo.setVisibility(View.GONE);
 
 
-
-
         if (mAuth.getCurrentUser() != null) {
-
-
 
 
             mAuth.getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-
                         firebaseUser = mAuth.getCurrentUser();
-                        usuario.setName(firebaseUser.getDisplayName());
-                        usuario.setEmail(firebaseUser.getEmail());
-                        txtUserName.setText(usuario.getName());
-                        handleUserCountry(usuario.getEmail());
-                        handleUserProfilePicture();
+
+                        if (!firebaseUser.isAnonymous()) {
+                            usuario.setName(firebaseUser.getDisplayName());
+                            usuario.setEmail(firebaseUser.getEmail());
+                            txtUserName.setText(usuario.getName());
+                            handleUserCountry(usuario.getEmail());
+                            handleUserProfilePicture();
+                        } else {
+                            updateUiForAnonymousUser();
+                        }
 
 
                     } else {
                         txtUserName.setText(R.string.error_fetching_user_info);
                         btnRefreshUserInfo.setVisibility(View.VISIBLE);
                         Toast.makeText(MainActivity.this, R.string.error_fetching_user_information, Toast.LENGTH_SHORT).show();
-                        Snackbar.make(containerLayout, "sdasd", Snackbar.LENGTH_INDEFINITE).show();
 
 
                     }
                 }
             });
 
-         }
 
         }
+
+    }
+
+    private void updateUiForAnonymousUser() {
+
+        txtUserName.setText(R.string.guest_account);
+        imageUserCountry.setImageResource(World.getFlagOf(R.drawable.globe));
+
+
+    }
 
     private void handleUserProfilePicture() {
 
@@ -267,11 +272,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
 
-            if (UsuarioInformation.usuario != null){
+            if (UsuarioInformation.usuario != null) {
                 UsuarioInformation.removeInstance();
             }
 
-            mAuth.signOut();
+            if (firebaseUser.isAnonymous()) {
+                firebaseUser.delete();
+
+            } else {
+                mAuth.signOut();
+            }
             startActivity(new Intent(this, AuthActivity.class));
             finish();
 
@@ -354,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 
-        if (shouldRefreshUserInfo){
+        if (shouldRefreshUserInfo) {
             bindUserInfoInDrawer();
             shouldRefreshUserInfo = false;
             Toast.makeText(this, "Information Updated", Toast.LENGTH_SHORT).show();
@@ -377,14 +387,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.header_layout_txtUserName:
 
+
                 if (MyHelper.netConn(this) && firebaseUser != null) {
 
-                    Intent intent = new Intent(this, ProfileEditActivity.class);
-                    intent.putExtra(KEY_FOR_USER_EMAIL, usuario.getEmail());
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                } else {
+                    if (!firebaseUser.isAnonymous()) {
+                        Intent intent = new Intent(this, ProfileEditActivity.class);
+                        intent.putExtra(KEY_FOR_USER_EMAIL, usuario.getEmail());
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    } else {
+                        Toast.makeText(this, R.string.create_an_account_to_edit_your_profile, Toast.LENGTH_SHORT).show();
+                    }
+                } else if (!MyHelper.netConn(this)) {
                     MyHelper.showSnackbarLong(R.string.no_internet_connection, drawerLayout);
+                } else {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    MyHelper.showSnackbarLong(R.string.please_refresh_user_info, drawerLayout);
                 }
 
 

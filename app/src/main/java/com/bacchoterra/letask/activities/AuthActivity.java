@@ -190,6 +190,27 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         return url.replace(oldSize,newSize);
     }
 
+    private void signInAnonymously(){
+
+        MyHelper.showProgressDialog(this);
+        mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+
+                    Intent intent = new Intent(AuthActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                }else {
+                    MyHelper.showSnackbarLong(R.string.error,txtVisitorSignIn);
+                    MyHelper.dismissProgressDialog();
+                }
+            }
+        });
+
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -212,6 +233,11 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.auth_activity_btnEmailSignIn:
                 startActivity(new Intent(AuthActivity.this, EmailAuthActivity.class));
                 overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+                break;
+
+            case R.id.auth_activity_txtVisitorSignIn:
+                signInAnonymously();
+                break;
 
         }
 
