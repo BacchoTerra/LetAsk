@@ -14,7 +14,6 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:title="asdasds"
             app:layout_scrollFlags="scroll|enterAlways">
 
 
@@ -24,6 +23,21 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/statusBarColor"
                 app:layout_collapseMode="parallax">
+
+                <TextView
+                    android:id="@+id/activity_main_toolbar_txtAddQuestion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/add"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    app:drawableStartCompat="@drawable/ic_round_add_24"
+                    app:drawableTint="@color/colorPrimary"
+                    android:textColor="@color/colorPrimary"
+                    android:gravity="center"
+                    android:paddingHorizontal="6dp"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginRight="12dp" />
 
             </androidx.appcompat.widget.Toolbar>
 

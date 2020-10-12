@@ -26,6 +26,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
+        android:enabled="false"
+        android:text="@string/loading"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/textPrimaryColor"
         android:textStyle="bold"
@@ -33,8 +35,7 @@
         app:drawableTint="@color/regularIconColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/header_layout_imageUserPic"
-        tools:text="Bruno Baccho Terra" />
+        app:layout_constraintStart_toStartOf="@+id/header_layout_imageUserPic" />
 
     <ImageView
         android:id="@+id/header_layout_imageDarkMode"

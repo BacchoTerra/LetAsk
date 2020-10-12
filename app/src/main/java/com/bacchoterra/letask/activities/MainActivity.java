@@ -10,6 +10,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //Layout components
     private Toolbar toolbar;
+    private TextView txtAddQuestion;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
     private BottomNavigationViewEx bottomNavigationViewEx;
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
 
         toolbar = findViewById(R.id.activity_main_toolbar);
+        txtAddQuestion = findViewById(R.id.activity_main_toolbar_txtAddQuestion);
         drawerLayout = findViewById(R.id.activity_main_drawerLayout);
         navView = findViewById(R.id.activity_main_navView);
         bottomNavigationViewEx = findViewById(R.id.activity_main_bottomNavView);
@@ -122,13 +125,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         imageExit.setOnClickListener(this);
         txtUserName.setOnClickListener(this);
+        txtAddQuestion.setOnClickListener(this);
 
     }
 
     private void initToolbarAndDrawer() {
 
         setSupportActionBar(toolbar);
-        createToolbarButton();
+        createToolbarRefreshButton();
         ActionBarDrawerToggle abdt = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
 
         drawerLayout.addDrawerListener(abdt);
@@ -136,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void createToolbarButton() {
+    private void createToolbarRefreshButton() {
 
         btnRefreshUserInfo = new Button(this);
         btnRefreshUserInfo.setText(R.string.refresh);
@@ -170,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             usuario.setName(firebaseUser.getDisplayName());
                             usuario.setEmail(firebaseUser.getEmail());
                             txtUserName.setText(usuario.getName());
+                            txtUserName.setEnabled(true);
                             handleUserCountry(usuario.getEmail());
                             handleUserProfilePicture();
                         } else {
@@ -372,6 +377,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    public static float pxFromDp(final Context context, final float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
     @Override
     public void onClick(View view) {
 
@@ -405,7 +414,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     MyHelper.showSnackbarLong(R.string.please_refresh_user_info, drawerLayout);
                 }
 
-
+                break;
+            case R.id.activity_main_toolbar_txtAddQuestion:
+                Toast.makeText(this, "add", Toast.LENGTH_SHORT).show();
         }
 
     }

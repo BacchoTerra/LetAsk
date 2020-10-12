@@ -182,6 +182,7 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
         final ProgressBar pb = createToolbarProgressBar();
         final MenuItem item = mMenu.findItem(R.id.simple_save_menu_save);
         item.setVisible(false);
+        fabChoosePic.setEnabled(false);
 
 
         if (MyHelper.netConn(this)) {
@@ -219,6 +220,7 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
                         Toast.makeText(ProfileEditActivity.this, error, Toast.LENGTH_LONG).show();
                         pb.setVisibility(View.GONE);
                         item.setVisible(true);
+                        fabChoosePic.setEnabled(true);
                     }
                 });
 
@@ -237,6 +239,7 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
             MyHelper.showSnackbarLong(R.string.no_internet_connection, toolbar);
             pb.setVisibility(View.GONE);
             item.setVisible(true);
+            fabChoosePic.setEnabled(true);
         }
 
     }
@@ -288,6 +291,7 @@ public class ProfileEditActivity extends AppCompatActivity implements View.OnCli
 
                 if (clickLock != 0) {
                     updateUser();
+
                 }
 
                 break;
